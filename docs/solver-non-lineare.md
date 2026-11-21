@@ -19,6 +19,22 @@ a `1e-9`; riformulare per evitare quantità minuscole (es. `q·p^eps ≤ A` inve
 `q ≤ A·p^(-eps)`).
 
 
+## Obiettivi quadratici
+
+Gli obiettivi **quadratici** (Markowitz, SVM, smoothing, minimi quadrati) si scrivono in modo
+naturale, come prodotti di variabili o di espressioni lineari:
+
+```python
+m.setObjective(x @ Q @ x, GRB.MINIMIZE)                  # forma matriciale (numpy)
+m.setObjective(gp.quicksum(q[i,j]*x[i]*x[j] for i in I for j in I), GRB.MINIMIZE)
+m.Params.NonConvex = 2      # solo per QP non convessi (es. pricing p*q)
+```
+
+Se $\boldsymbol Q \succeq 0$ il QP è convesso e non serve nessun parametro; con
+`NonConvex = 2` Gurobi risolve all'ottimo globale anche i QP non convessi. Se `Pi` non è
+disponibile (vincoli quadratici o funzionali) si usa `m.Params.QCPDual = 1` per i vincoli
+quadratici, altrimenti la verifica per perturbazione.
+
 ## Come si scrivono
 
 ```python
