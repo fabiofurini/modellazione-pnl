@@ -4,6 +4,15 @@ hide:
   - toc
 ---
 
+<div class="cantiere" markdown style="text-align:center">
+
+![Lavori in corso: sito e materiale didattico sono ancora in costruzione](img/cantiere.svg){ width="560" }
+
+**Sito in costruzione.** Alcune parti, come i richiami sulle condizioni KKT, saranno completate insieme al
+corso di [Ottimizzazione convessa](https://fabiofurini.github.io/ottimizzazione-convessa/).
+
+</div>
+
 <div class="hero" markdown>
 
 # Modellazione PNL
