@@ -15,7 +15,7 @@ jobs:
         with:
           python-version: "3.12"
       - run: python3 python/genera_notebook.py --verifica
-      - run: pip install mkdocs-material mkdocs-redirects
+      - run: pip install mkdocs-material
       - run: mkdocs build --strict
       - uses: actions/upload-pages-artifact@v3
         with:

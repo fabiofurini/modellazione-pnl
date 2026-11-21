@@ -1,62 +1,41 @@
 # Programma
 
 <!-- collana-dalla-fascia -->
-Ogni capitolo parte da un problema gestionale concreto — quanto produrre, dove
-localizzare un servizio, quale prezzo fissare, quanto rischio accettare — lo
-trasforma in un modello di ottimizzazione, lo risolve con Gurobi chiamato da Python e, soprattutto, lo
-*interroga*: quanto vale un'ora di capacità in più? La soluzione resiste se i dati
-cambiano del 5%?
+Ogni capitolo parte da un problema gestionale concreto — quanto rischio accettare,
+quale prezzo fissare, dove localizzare un servizio, quanto regolare tenere un piano —
+lo trasforma in un modello **non lineare**, lo risolve con Gurobi chiamato da Python e
+lo *interroga*: quanto vale una risorsa in più? quanto costa un piano più regolare?
 
 Tutti i modelli si possono eseguire **subito nel browser**: ogni capitolo ha il
 suo [notebook che si apre in Colab](notebook.md), senza installare niente.
-
-!!! tip "La domanda giusta"
-    Alla fine di ogni esercitazione la domanda non è soltanto *«qual è l'ottimo?»*,
-    ma *«quale decisione suggeriamo e quanto è robusta?»*. Tutte le variabili di
-    decisione sono **continue**; a seconda della classe del modello la soluzione
-    si legge con la dualità LP/QP, con i prezzi ombra o con le condizioni KKT.
+Prerequisiti: [Modellazione PL](https://fabiofurini.github.io/modellazione-pl/) e
+[Ottimizzazione convessa](https://fabiofurini.github.io/ottimizzazione-convessa/).
 <!-- /collana-dalla-fascia -->
 
-L'elenco completo dei capitoli del laboratorio, nell'ordine in cui si affrontano.
-Ogni capitolo ha la sua pagina, il suo script Python e il suo
-[notebook che si apre in Colab](notebook.md).
+L'elenco completo dei capitoli, nell'ordine in cui si affrontano.
 
 **[Strumenti](strumenti.md)**
 
-1. [Teoria: programmazione lineare](teoria-lp.md) e [ottimizzazione non lineare](teoria-non-lineare.md) — dualità,
-   prezzi ombra, KKT, protocollo di sensitività
-2. [Solver, modelli lineari](solver-lp.md) e [non lineari](solver-non-lineare.md) — costruire il modello, farlo
-   girare, recuperare la soluzione, interpretare l'output
+1. Introduzione al corso — questa pagina e la [prima pagina](index.md)
+2. [Teoria: ottimizzazione non lineare](teoria-non-lineare.md) — convessità, QP, KKT
+3. [Solver: modelli non lineari](solver-non-lineare.md) — vincoli funzionali e bilineari, moltiplicatori
 
 **[Modelli deterministici](modelli-deterministici.md)**
 
-3. [Produzione e scorte multiperiodali](produzione.md) — LP/QP
-4. [Supply chain con congestione e CO₂](supplychain.md) — LP/NLP
-5. [Portafoglio di Markowitz](markowitz.md) — QP
-6. [Pricing e revenue management](pricing.md) — NLP
-7. [Budget pubblicitario](budget.md) — NLP convesso
-8. [Localizzazione continua](localizzazione.md) — NLP convesso
-9. [Ricarica di veicoli elettrici](ricarica-ev.md) — LP/QP
-10. [Code e capacità di servizio](code.md) — NLP convesso
-11. [Data Envelopment Analysis](dea.md) — LP e dualità
-
-**[Decisioni sotto incertezza](decisioni-incertezza.md)**
-
-12. [Il Newsvendor e le sue varianti](newsvendor.md) — LP stocastico
-13. [VaR e CVaR](var-cvar.md) — LP a scenari
-14. [Arbitraggio e prezzatura](arbitraggio.md) — LP e dualità che prezza
+4. [Produzione con smoothing quadratico](produzione-quadratica.md) — QP convesso
+5. [Supply chain con congestione e CO₂](supplychain.md) — NLP convesso
+6. [Portafoglio di Markowitz](markowitz.md) — QP convesso
+7. [Pricing e revenue management](pricing.md) — NLP
+8. [Budget pubblicitario](budget.md) — NLP convesso
+9. [Localizzazione continua](localizzazione.md) — NLP convesso
+10. [Ricarica EV con profilo regolare](ricarica-ev-quadratica.md) — QP convesso
+11. [Code e capacità di servizio](code.md) — NLP convesso
 
 **[Ottimizzazione e machine learning](ottimizzazione-ml.md)**
 
-15. [Support Vector Machine](svm.md) — QP
-16. [Regressione robusta e quantile](regressione.md) — LP
+12. [Support Vector Machine](svm.md) — QP convesso
+13. [Regressione ai minimi quadrati](minimi-quadrati.md) — QP convesso
 
 **Il corso**
 
-17. [Organizzazione del laboratorio](organizzazione.md) — laboratori ed errori da
-    evitare
-
----
-
-Le quattro parti e a che cosa serve ciascuna sono descritte nella
-[prima pagina](index.md).
+14. [Organizzazione del corso](organizzazione.md) — laboratori ed errori da evitare

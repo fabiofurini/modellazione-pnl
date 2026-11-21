@@ -1,7 +1,7 @@
-site_name: Laboratorio di Ricerca Operativa · Fabio Furini
+site_name: Modellazione PNL · Fabio Furini
 site_url: https://fabiofurini.github.io/modellazione-pnl/
 site_description: >-
-  Modelli continui di ottimizzazione:
+  Modelli di programmazione non lineare:
   dispensa, codice Python/Gurobi, dati e casi di studio.
 site_author: Fabio Furini
 repo_url: https://github.com/fabiofurini/modellazione-pnl
@@ -45,10 +45,6 @@ theme:
 
 plugins:
   - search
-  - redirects:
-      redirect_maps:
-        richiami.md: teoria-lp.md
-        guida-gurobi.md: solver-lp.md
 
 extra:
   social:
@@ -61,6 +57,9 @@ extra:
     - icon: fontawesome/brands/github
       link: https://github.com/fabiofurini
       name: GitHub
+    - icon: material/chart-timeline-variant
+      link: https://fabiofurini.github.io/modellazione-pl/
+      name: Modellazione PL
     - icon: material/vector-polygon
       link: https://fabiofurini.github.io/modellazione-mip/
       name: Modellazione MIP
@@ -115,31 +114,23 @@ nav:
   - Home: index.md
   - Strumenti:
       - strumenti.md
-      - Teoria, programmazione lineare: teoria-lp.md
       - Teoria, ottimizzazione non lineare: teoria-non-lineare.md
-      - Solver, modelli lineari: solver-lp.md
       - Solver, modelli non lineari: solver-non-lineare.md
       - Notebook in Colab: notebook.md
   - Modelli deterministici:
       - modelli-deterministici.md
-      - Produzione e scorte: produzione.md
+      - Produzione con smoothing quadratico: produzione-quadratica.md
       - Supply chain e CO2: supplychain.md
       - Portafoglio di Markowitz: markowitz.md
       - Pricing e revenue management: pricing.md
       - Budget pubblicitario: budget.md
       - Localizzazione continua: localizzazione.md
-      - Ricarica di veicoli elettrici: ricarica-ev.md
+      - Ricarica EV con profilo regolare: ricarica-ev-quadratica.md
       - Code e capacità di servizio: code.md
-      - Data Envelopment Analysis: dea.md
-  - Decisioni sotto incertezza:
-      - decisioni-incertezza.md
-      - Il Newsvendor: newsvendor.md
-      - VaR e CVaR: var-cvar.md
-      - Arbitraggio e prezzatura: arbitraggio.md
   - Ottimizzazione e machine learning:
       - ottimizzazione-ml.md
       - Support Vector Machine: svm.md
-      - Regressione robusta e quantile: regressione.md
+      - Regressione ai minimi quadrati: minimi-quadrati.md
   - Quiz: autovalutazione.md
   - Materiale: materiale.md
   - Indice:

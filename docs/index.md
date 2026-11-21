@@ -6,7 +6,7 @@ hide:
 
 <div class="hero" markdown>
 
-# Laboratorio di Ricerca Operativa
+# Modellazione PNL
 
 <!-- collana-riga -->
 <p class="collana-riga" markdown>Un corso della collana <b>Ricerca Operativa e Matematica</b> · [tutti i corsi](#la-collana)</p>
@@ -15,11 +15,10 @@ hide:
 Materiale didattico ideato e sviluppato da **[Fabio Furini](https://fabiofurini.github.io/)**, professore
 associato al [DIAG](https://www.diag.uniroma1.it/), Sapienza Università di Roma.
 
-**Modelli continui di ottimizzazione** — la dispensa
-del corso in versione online, con codice Python/Gurobi, dati e casi di studio
-riproducibili.
+**Modelli di programmazione non lineare** — la dispensa del corso in versione
+online, con codice Python/Gurobi e casi di studio riproducibili.
 
-Prerequisiti: [Programmazione lineare](https://fabiofurini.github.io/programmazione-lineare/) e [Ottimizzazione convessa](https://fabiofurini.github.io/ottimizzazione-convessa/).
+Prerequisiti: [Modellazione PL](https://fabiofurini.github.io/modellazione-pl/) e [Ottimizzazione convessa](https://fabiofurini.github.io/ottimizzazione-convessa/).
 
 [Comincia :material-arrow-right:](strumenti.md){ .md-button .md-button--primary }
 [:material-clipboard-check-outline: Quiz](autovalutazione.md){ .md-button }
@@ -47,36 +46,26 @@ La frontiera efficiente di Markowitz: ogni punto è un portafoglio ottimo per un
 
     ---
 
-    Come si costruisce un modello, come si fa girare, come si leggono soluzione,
-    prezzi ombra e costi ridotti: la teoria e il solver.
+    Convessità, programmazione quadratica e condizioni KKT; i comandi del solver
+    per i modelli non lineari e i moltiplicatori dei QP.
 
-    [:octicons-arrow-right-24: I quattro capitoli](strumenti.md)
+    [:octicons-arrow-right-24: I capitoli](strumenti.md)
 
 -   :material-factory: **Modelli deterministici**
 
     ---
 
-    Produzione, supply chain, portafoglio, prezzi, budget, localizzazione,
-    ricarica dei veicoli elettrici, code, efficienza delle filiali: tutti i dati
-    sono noti.
+    Produzione con smoothing, supply chain, portafoglio, prezzi, budget,
+    localizzazione, ricarica dei veicoli elettrici, code: tutti i dati sono noti.
 
-    [:octicons-arrow-right-24: I nove problemi](modelli-deterministici.md)
-
--   :material-dice-multiple: **Decisioni sotto incertezza**
-
-    ---
-
-    Si decide prima di sapere: la regola del quantile, il rischio di coda e la
-    dualità che dà il prezzo agli strumenti finanziari.
-
-    [:octicons-arrow-right-24: I tre problemi](decisioni-incertezza.md)
+    [:octicons-arrow-right-24: Gli otto problemi](modelli-deterministici.md)
 
 -   :material-robot: **Ottimizzazione e machine learning**
 
     ---
 
-    La SVM come QP convesso e la regressione robusta come LP: margine, duale,
-    support vector e punti di appoggio — senza librerie di ML.
+    La SVM e i minimi quadrati come QP convessi: margine, duale, support vector,
+    equazioni normali — senza librerie di ML.
 
     [:octicons-arrow-right-24: I due problemi](ottimizzazione-ml.md)
 

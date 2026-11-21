@@ -2,7 +2,7 @@
 
 Il ponte fra le due discipline: un modello di apprendimento è, alla fine, un
 problema di ottimizzazione da risolvere con lo stesso solver del resto del corso.
-Un QP che classifica e un LP che stima.
+Un QP che classifica e un QP che stima.
 
 <div class="grid cards" markdown>
 
@@ -15,13 +15,13 @@ Un QP che classifica e un LP che stima.
 
     [:octicons-arrow-right-24: QP](svm.md)
 
--   :material-chart-scatter-plot: **Regressione robusta e quantile**
+-   :material-chart-scatter-plot: **Regressione ai minimi quadrati**
 
     ---
 
-    Stimare i parametri con un LP: scarti assoluti invece che quadratici, punti
-    di appoggio dai duali e il quantile che serve al newsvendor.
+    I minimi quadrati come QP convesso: le KKT sono le equazioni normali,
+    il confronto con le regressioni robusta e quantile, la ridge.
 
-    [:octicons-arrow-right-24: LP](regressione.md)
+    [:octicons-arrow-right-24: QP convesso](minimi-quadrati.md)
 
 </div>

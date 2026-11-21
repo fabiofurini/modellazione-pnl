@@ -1,49 +1,34 @@
-# Ricarica intelligente di veicoli elettrici
+# Ricarica di veicoli elettrici con profilo regolare
 
-[:material-file-pdf-box: Dispensa (PDF)](pdf/dispensa-modellazione-pnl.pdf) · [:material-presentation: Slide del capitolo (PDF)](pdf/slide-10-ricarica-ev.pdf)
+[:material-file-pdf-box: Dispensa (PDF)](pdf/dispensa-modellazione-pnl.pdf) · [:material-presentation: Slide del capitolo (PDF)](pdf/slide-10-ricarica-ev-quadratica.pdf) · [:material-pencil: Esercizi](#esercizi)
 
-**Classe:** LP / QP convesso · **Script:** `python/lab10_ricarica_ev.py`
+**Classe:** QP convesso · **Script:** `python/lab10_ricarica_ev_quadratica.py`
 
-[![Apri in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fabiofurini/modellazione-pnl/blob/main/notebooks/lab10_ricarica_ev.ipynb)
+[![Apri in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fabiofurini/modellazione-pnl/blob/main/notebooks/lab10_ricarica_ev_quadratica.ipynb)
 
-Una flotta deve arrivare carica al mattino sfruttando le ore economiche — ma se
-tutti caricano insieme, il picco di prelievo esplode. Un problema che *sembra*
-richiedere variabili di accensione/spegnimento e invece è un LP puro: la decisione
-vera — quanta potenza — è continua.
-
-**Il problema a parole.** *Decidiamo* la potenza $x_{vt}$ per veicolo e ora.
-*L'obiettivo*: minima spesa energetica. *I vincoli*: energia richiesta entro la
-partenza, ricarica solo quando collegati e sotto la potenza del caricatore,
-prelievo totale sotto la potenza del contatore.
+Il caso, i dati e il modello lineare sono quelli di
+[Modellazione PL, «Ricarica intelligente di veicoli elettrici»](https://fabiofurini.github.io/modellazione-pl/ricarica-ev/).
+La ricarica a costo minimo insegue le ore economiche: il prelievo totale sale fino a
+103,4 kW e cambia fino a 54,9 kW da un'ora all'altra. Qui si aggiunge all'obiettivo
+una penalità **quadratica** sui salti orari del prelievo totale.
 
 ## Modello
 
-**Dati (input del modello).**
+**Che cosa cambia.** Dati, variabili e vincoli sono quelli del modello lineare
+($x_{vt}$ potenza al veicolo $v$ nell'ora $t$, prezzi $\pi_t$, disponibilità
+$a_{vt}$, energia $e_v$, potenze $\bar p_v$, carico di base $b_t$, contatore $k$,
+rendimento $\eta$). Si aggiunge un solo dato:
 
 | Simbolo | Tipo | Significato |
 |---|---|---|
-| $n$ | $\in \mathbb{Z}_{\ge 1}$ | numero di veicoli, indicizzati da $v \in \{1, 2, \dots, n\}$ |
-| $m$ | $\in \mathbb{Z}_{\ge 1}$ | numero di intervalli orari, indicizzati da $t \in \{1, 2, \dots, m\}$, di durata $\Delta t$ (qui $\Delta t = 1$ h) |
-| $\pi_t$ | $\in \mathbb{Q}_{\ge 0}$ | prezzo dell'energia nell'ora $t$ (€/kWh) |
-| $a_{vt}$ | $\in \{0, 1\}$ | *dato* osservato: $1$ se il veicolo $v$ è collegato nell'ora $t$, $0$ altrimenti |
-| $e_v$ | $\in \mathbb{Q}_{> 0}$ | energia richiesta dal veicolo $v$ entro la partenza (kWh) |
-| $\bar p_v$ | $\in \mathbb{Q}_{> 0}$ | potenza massima di ricarica del veicolo $v$ (kW) |
-| $b_t$ | $\in \mathbb{Q}_{\ge 0}$ | carico di base dell'edificio nell'ora $t$ (kW) |
-| $k$ | $\in \mathbb{Q}_{> 0}$ | potenza massima prelevabile dal contatore (kW) |
-| $\eta$ | $\in \mathbb{Q},\ 0 < \eta \le 1$ | rendimento di carica |
+| $\gamma$ | $\in \mathbb{Q}_{\ge 0}$ | peso dei salti del prelievo totale (€ per kW²) |
 
-**Variabili decisionali.** Introduciamo le seguenti $n\,m$ variabili non negative:
-
-$$
-x_{vt} = \text{potenza assegnata al veicolo } v \text{ nell'ora } t \text{ (kW)},
-\qquad \forall v \in \{1, 2, \dots, n\},~\forall t \in \{1, 2, \dots, m\}.
-$$
-
-Usando queste variabili, un modello LP per il problema è il seguente:
+Con $z_t = b_t + \sum_{v=1}^{n} x_{vt}$ (un'espressione lineare, non una variabile
+nuova), un modello QP per il problema è il seguente:
 
 $$
 \begin{aligned}
-\min ~~ \sum_{v=1}^{n} \sum_{t=1}^{m} \pi_t\, \Delta t\, x_{vt} & & \\
+\min ~~ \sum_{v=1}^{n} \sum_{t=1}^{m} \pi_t\, \Delta t\, x_{vt} + \gamma \sum_{t=2}^{m} \bigl( z_t - z_{t-1} \bigr)^{2} & & \\
 \text{soggetto a} \quad \eta \sum_{t=1}^{m} \Delta t\, x_{vt} &\ge e_v, & \forall v \in \{1, 2, \dots, n\}, \\
 \sum_{v=1}^{n} x_{vt} + b_t &\le k, & \forall t \in \{1, 2, \dots, m\}, \\
 x_{vt} &\le a_{vt}\, \bar p_v, & \forall v \in \{1, 2, \dots, n\},~\forall t \in \{1, 2, \dots, m\}, \\
@@ -53,122 +38,107 @@ $$
 
 Descrizione della funzione obiettivo e dei vincoli:
 
-- la funzione obiettivo lineare minimizza la spesa energetica della notte: la potenza
-  $x_{vt}$ erogata per la durata $\Delta t$ costa $\pi_t\, \Delta t\, x_{vt}$ euro;
-- i vincoli lineari di **energia** assicurano che ogni veicolo riceva tutta l'energia
-  richiesta entro la partenza; il rendimento $\eta$ sta a sinistra: dell'energia
-  prelevata solo la frazione $\eta$ finisce in batteria ($n$ vincoli lineari);
-- i vincoli lineari di **rete** impongono che il prelievo complessivo (ricarica più
-  carico di base) non superi mai la potenza del contatore: sono i vincoli che
-  accoppiano i veicoli tra loro ($m$ vincoli lineari);
-- i vincoli lineari di **potenza** limitano la potenza di ogni veicolo al suo
-  caricatore e la azzerano nelle ore in cui il veicolo è assente ($a_{vt} = 0$): la
-  disponibilità è un *dato*, non una decisione, ed è per questo che non servono
-  variabili binarie ($n\,m$ vincoli lineari);
-- i vincoli di non negatività su $x_{vt}$ definiscono le variabili del modello.
+- la funzione obiettivo quadratica somma alla spesa energetica il peso $\gamma$ per il
+  quadrato di ogni salto orario del prelievo totale;
+- i vincoli lineari di **energia** garantiscono il fabbisogno di ogni veicolo
+  ($n$ vincoli lineari);
+- i vincoli lineari di **rete** limitano il prelievo al contatore ($m$ vincoli lineari);
+- i vincoli lineari di **potenza** limitano ogni veicolo e lo azzerano quando è
+  assente ($n\,m$ vincoli lineari);
+- i vincoli di non negatività definiscono le variabili del modello.
 
-Varianti: peak shaving ($\min z$ con $\sum_{v=1}^{n} x_{vt} + b_t \le z$ per ogni
-$t \in \{1, 2, \dots, m\}$); profilo regolare (QP con
-$\gamma \sum_{t=2}^{m} (z_t - z_{t-1})^2$); multiobiettivo costo $+\,\rho\,z$.
-Il vincolo di energia è scritto come $\ge$ perché caricare più del necessario è
-ammesso ma mai conveniente (il prezzo è positivo): all'ottimo vale con uguaglianza.
+I salti sono quelli del prelievo **totale**, carico di base compreso: la ricarica può
+addolcire anche le rampe dell'edificio.
 
 !!! example "Esempio a mano (1 veicolo, 2 ore)"
-    $e = 10$ kWh ($\eta = 1$), prezzi $\pi_1 = 0{,}10$ e $\pi_2 = 0{,}20$ €/kWh,
-    $\bar p = 8$ kW: si carica 8 kWh nell'ora economica e 2 in quella cara (costo
-    $8 \cdot 0{,}10 + 2 \cdot 0{,}20 = 1{,}20$ €). Prezzo ombra del fabbisogno
-    = 0,20 €/kWh (il prezzo dell'*ora marginale*); prezzo ombra del limite di potenza
-    nell'ora 1 = 0,10 €/kW. Con $\bar p = 12$: tutto nell'ora economica, costo 1,00 €,
-    duale del fabbisogno 0,10 e duale della potenza 0 (vincolo non attivo).
+    $e = 10$ kWh, $\eta = 1$, prezzi $0{,}10$ e $0{,}20$ €/kWh, $\bar p = 12$ kW. Il
+    modello lineare carica tutto nell'ora economica. Con $\gamma = 0{,}01$ il solver dà
+    $\tilde x = (6{,}25;\ 3{,}75)$, $\tilde z = 1{,}4375$ e moltiplicatore del
+    fabbisogno $0{,}15$. Con $x_1 = 5 + d$ l'obiettivo è
+    $1{,}5 - 0{,}1d + 4\gamma d^2$, minimo in $d = 1/(80\gamma)$ (per
+    $\gamma \ge 1/400$). La stazionarietà dà
+    $\lambda = (0{,}10 + 0{,}20)/2 = 0{,}15$: il kWh marginale costa la **media** dei
+    due prezzi.
 
-## Caso di studio
-
-Sei furgoni con finestre notturne diverse, contatore $k = 120$ kW, $\eta = 0{,}95$.
+## Risultati
 
 ```text
-Costo minimo   : 20,36 EUR/notte   picco di prelievo 103,4 kW (limite 120)
-Peak shaving   : picco minimo possibile 68,0 kW
-Prezzi ombra del fabbisogno (EUR/kWh):
-  V1 0,0947   V2 0,0842   V3 0,0842   V4 0,0947   V5 0,0947   V6 0,0842
+gamma = 0,000: spesa 20,36  picco 103,4 kW  salto max 54,9  somma salti^2 7268,4
+gamma = 0,001: spesa 21,76  picco  77,3 kW  salto max 15,4  somma salti^2 1188,4
+gamma = 0,010: spesa 24,67  picco  68,0 kW  salto max 10,0  somma salti^2  298,2
 ```
 
-![Profili di prelievo](img/cap10_profili.png)
+![Prelievo totale per tre valori di gamma](img/cap10_profili_qp.png)
 
-I prezzi ombra del fabbisogno valgono $0{,}0842 = 0{,}08/\eta$ oppure
-$0{,}0947 = 0{,}09/\eta$: sono i prezzi delle **ore marginali** di ciascun veicolo
-(l'ora più economica ancora libera nella sua finestra), corretti per il rendimento.
-V2, V3 e V6 hanno finestre che coprono le ore a $0{,}08$; V1, V4 e V5 arrivano tardi
-o partono presto e la loro ora marginale costa $0{,}09$. Un kWh di fabbisogno in più
-costa quindi 8,4–9,5 centesimi a seconda del veicolo.
+Con $\gamma = 0{,}01$ il profilo regolare costa 4,31 € a notte in più e porta il
+picco a 68 kW, il minimo possibile. Il compromesso lineare costo + ρ·picco di
+Modellazione PL arrivava allo stesso picco spendendo meno, perché guarda solo il
+massimo; il QP paga anche per addolcire ogni rampa.
 
 ## Sensitività
 
-![Frontiera costo-picco](img/cap10_frontiera.png)
-
 ```text
-Compromesso costo + rho*picco:
-  rho = 0,00: costo 20,36  picco 103,4     rho = 0,20: costo 22,15  picco 68,0
-  rho = 0,05: costo 20,69  picco  86,5     rho = 0,50: costo 22,15  picco 68,0
-  rho = 0,10: costo 21,39  picco  74,9
-Capacita' del contatore:
-  k = 60, 65 kW: INAMMISSIBILE     k = 80: 21,09     k = 120: 20,36
-  k = 70 kW    : 21,93             k = 90: 20,63
+          V1      V2      V3      V4      V5      V6   (EUR/kWh)
+g=0     0,0947  0,0842  0,0842  0,0947  0,0947  0,0842
+g=0,001 0,0886  0,0886  0,0886  0,0886  0,0886  0,0886
+g=0,01  0,0916  0,0916  0,0916  0,0916  0,0916  0,0916
+Verifica (g = 0,01): e_1 + 1 kWh -> 0,0917;  e_1 + 0,01 kWh -> 0,0916
 ```
 
-Tagliare il picco da 103 a 75 kW (−28%) costa solo un euro a notte; arrivare a 68 kW
-ne costa meno di due. Il minimax puro (picco 68) senza termine di costo spenderebbe
-27,79 €: il compromesso con $\rho = 0{,}2$ ottiene lo *stesso* picco a 22,15 € — mai
-ottimizzare un solo obiettivo quando ce ne sono due.
+!!! note "Un solo prezzo per tutti i veicoli"
+    Nel modello lineare ogni veicolo ha il suo kWh marginale; nel QP i moltiplicatori
+    coincidono, perché la penalità lega i veicoli attraverso il prelievo totale.
 
-!!! warning "Un bug istruttivo (capitato davvero)"
-    Nel vincolo `quicksum(x) + base[t] <= C` Gurobi sposta la costante nel termine
-    noto: il RHS memorizzato è `C - base[t]`. Chi scrive `v.RHS = nuovaC` sta
-    allentando il vincolo sbagliato. Quando una sensitività non cambia nulla,
-    sospettare del proprio codice prima che del modello.
+![Frontiera spesa-nervosismo](img/cap10_frontiera_qp.png)
 
+!!! tip "Take-away manageriale"
+    La frontiera è ripida all'inizio: con 1,15 € in più a notte ($\gamma = 0{,}0005$)
+    la somma dei salti al quadrato scende da 7.268 a 1.563. Oltre $\gamma = 0{,}1$ ogni
+    ulteriore addolcimento costa molto.
 
 ## Codice
 
-Lo script completo del capitolo — dati, modello, soluzione, sensitività e figure —
-è [`python/lab10_ricarica_ev.py`](https://github.com/fabiofurini/modellazione-pnl/blob/main/python/lab10_ricarica_ev.py)
-(riproducibile con `python3 python/lab10_ricarica_ev.py` dalla cartella `python/`).
+Lo script completo del capitolo è
+[`python/lab10_ricarica_ev_quadratica.py`](https://github.com/fabiofurini/modellazione-pnl/blob/main/python/lab10_ricarica_ev_quadratica.py)
+(riproducibile con `python3 lab10_ricarica_ev_quadratica.py` dalla cartella `python/`); lo
+stesso codice è nel notebook che si apre in Colab dal badge in cima alla pagina.
 
-Lo stesso codice è disponibile come notebook — [`notebooks/lab10_ricarica_ev.ipynb`](https://github.com/fabiofurini/modellazione-pnl/blob/main/notebooks/lab10_ricarica_ev.ipynb) — che si apre in Colab dal badge in cima alla pagina e gira nel browser, senza installare niente.
-
-??? example "Mostra lo script completo — `lab10_ricarica_ev.py`"
+??? example "Mostra lo script completo — `lab10_ricarica_ev_quadratica.py`"
 
     ```python
-    """Capitolo 10 — Ricarica intelligente di veicoli elettrici (LP / QP convesso).
+    """Capitolo 10 — Ricarica di veicoli elettrici con profilo regolare (QP convesso).
 
-    Caso di studio: deposito aziendale con 6 furgoni elettrici da ricaricare
-    durante la notte; prezzi orari dell'energia; carico di base dell'edificio.
+    Caso di studio: lo stesso del modello lineare di ricarica (Modellazione PL):
+    deposito aziendale con 6 furgoni elettrici da ricaricare durante la notte,
+    prezzi orari dell'energia, carico di base dell'edificio. Qui si aggiunge in
+    obiettivo una penalità quadratica sulle variazioni del prelievo totale.
 
     Contenuto:
-      1. LP a costo minimo: la ricarica insegue le ore economiche
-      2. Peak shaving: minimizzare il picco di prelievo (minimax)
-      3. Profilo regolare (QP) e confronto multiobiettivo costo-picco
-      4. Prezzi ombra: capacità di rete e fabbisogno energetico
+      1. Dati (gli stessi del caso lineare)
+      2. Esempio svolto a mano: un veicolo, due ore
+      3. Il QP sul caso di studio per tre valori di gamma
+      4. Moltiplicatori del fabbisogno nel QP e verifica per perturbazione
+      5. Sensitività: la frontiera costo-nervosismo al variare di gamma
     """
     import gurobipy as gp
     import numpy as np
     import pandas as pd
     from gurobipy import GRB
 
-    from stile import (ARANCIO, GRIGIO, ROSSO, TEAL, intestazione, plt, salva_dat, salva_dati,
-                       salva_figura)
+    from stile import (ARANCIO, GRIGIO, ROSSO, TEAL, VERDE, intestazione, plt, salva_dat,
+                       salva_dati, salva_figura)
 
     # ----------------------------------------------------------------------
-    # 1. DATI
+    # 1. DATI (gli stessi del caso lineare)
     # ----------------------------------------------------------------------
+    # I dati sono quelli del caso lineare in Modellazione PL: si scrivono qui (stesso seme),
+    # così lo script gira anche in Colab; i file CSV stanno nel repository di Modellazione PL.
     ore = list(range(24))                      # ora t = [t, t+1)
-    # prezzo €/kWh: alto di giorno e nel picco serale, basso di notte
     prezzo = np.array([0.09, 0.08, 0.07, 0.07, 0.08, 0.10, 0.14, 0.18, 0.20, 0.19,
                        0.17, 0.16, 0.15, 0.15, 0.16, 0.18, 0.21, 0.24, 0.26, 0.24,
                        0.20, 0.15, 0.12, 0.10])
-    # carico di base dell'edificio (kW)
     base = np.array([22, 20, 19, 19, 20, 24, 35, 48, 60, 63, 65, 64,
                      62, 61, 62, 64, 66, 68, 62, 55, 45, 36, 30, 25], dtype=float)
-
     veicoli = [f"V{k}" for k in range(1, 7)]
     # (ora arrivo, ora partenza, energia richiesta kWh, potenza max kW)
     flotta = {
@@ -177,136 +147,148 @@ Lo stesso codice è disponibile come notebook — [`notebooks/lab10_ricarica_ev.
     }
     eta = 0.95            # rendimento di carica
     C_rete = 120.0        # potenza massima prelevabile dal contatore (kW)
-
     disp = {(v, t): 1 if (flotta[v][0] <= t or t < flotta[v][1]) else 0
             for v in veicoli for t in ore}      # finestre a cavallo della mezzanotte
 
-    salva_dati(pd.DataFrame({"ora": ore, "prezzo": prezzo, "carico_base": base}), "ev_prezzi_base")
-    salva_dati(pd.DataFrame([(v, *flotta[v]) for v in veicoli],
-                            columns=["veicolo", "arrivo", "partenza", "energia_kWh", "pmax_kW"]),
-               "ev_flotta")
 
 
-    def costruisci():
-        m = gp.Model("ricarica_ev")
+    def costruisci_qp(gamma, energia=None):
+        """QP: spesa energetica + gamma * somma dei salti del prelievo totale al quadrato."""
+        energia = energia or {v: flotta[v][2] for v in veicoli}
+        m = gp.Model("ricarica_ev_qp")
         m.Params.OutputFlag = 0
         x = m.addVars(veicoli, ore, name="x")       # potenza di carica (kW)
         for v in veicoli:
             for t in ore:
                 x[v, t].UB = flotta[v][3] * disp[v, t]     # 0 se non collegato
-        v_ene = m.addConstrs((eta * gp.quicksum(x[v, t] for t in ore) >= flotta[v][2]
+        v_ene = m.addConstrs((eta * gp.quicksum(x[v, t] for t in ore) >= energia[v]
                               for v in veicoli), name="energia")
-        v_rete = m.addConstrs((gp.quicksum(x[v, t] for v in veicoli) + base[t] <= C_rete
-                               for t in ore), name="rete")
-        return m, x, v_ene, v_rete
+        m.addConstrs((gp.quicksum(x[v, t] for v in veicoli) + base[t] <= C_rete for t in ore),
+                     name="rete")
+        z = {t: gp.quicksum(x[v, t] for v in veicoli) + base[t] for t in ore}
+        spesa = gp.quicksum(prezzo[t] * x[v, t] for v in veicoli for t in ore)
+        salti = gp.quicksum((z[t] - z[t - 1]) * (z[t] - z[t - 1]) for t in ore[1:])
+        m.setObjective(spesa + gamma * salti, GRB.MINIMIZE)
+        return m, x, v_ene
 
 
-    def profilo(x):
-        return np.array([sum(x[v, t].X for v in veicoli) for t in ore])
+    def leggi(x):
+        carica = np.array([sum(x[v, t].X for v in veicoli) for t in ore])
+        z = carica + base
+        salti = np.diff(z)
+        spesa = float(prezzo @ carica)
+        return spesa, z, salti, float((salti ** 2).sum())
 
 
     # ----------------------------------------------------------------------
-    # 2. LP COSTO MINIMO
+    # 2. ESEMPIO SVOLTO A MANO: UN VEICOLO, DUE ORE
     # ----------------------------------------------------------------------
-    intestazione("LP: costo energetico minimo")
-    m, x, v_ene, v_rete = costruisci()
-    m.setObjective(gp.quicksum(prezzo[t] * x[v, t] for v in veicoli for t in ore), GRB.MINIMIZE)
-    m.optimize()
-    assert m.Status == GRB.OPTIMAL
-    prof_costo = profilo(x)
-    costo_min = m.ObjVal
-    picco_costo = (prof_costo + base).max()
-    print(f"Costo di ricarica: {costo_min:.2f} €   picco di prelievo: {picco_costo:.1f} kW "
-          f"(limite {C_rete:.0f})")
-    print("\nPrezzi ombra del fabbisogno (costo marginale di 1 kWh in più per veicolo):")
+    intestazione("Esempio a mano: un veicolo, due ore (e = 10, prezzi 0,10 e 0,20, p_max = 12)")
+    for g in (0.0, 0.01, 0.1):
+        me = gp.Model("esempio")
+        me.Params.OutputFlag = 0
+        x1 = me.addVar(ub=12, name="x1")
+        x2 = me.addVar(ub=12, name="x2")
+        ce = me.addConstr(x1 + x2 >= 10, name="energia")
+        me.setObjective(0.10 * x1 + 0.20 * x2 + g * (x2 - x1) * (x2 - x1), GRB.MINIMIZE)
+        me.optimize()
+        print(f"  gamma = {g:4.2f}: x1 = {x1.X:6.3f}  x2 = {x2.X:6.3f}  spesa = "
+              f"{0.10 * x1.X + 0.20 * x2.X:6.4f}  obiettivo = {me.ObjVal:6.4f}  Pi = {ce.Pi:.4f}")
+    print(f"  formula: x1 = 5 + 1/(80 gamma); con gamma = 0,01: x1 = {5 + 1 / (80 * 0.01):.2f}")
+
+    # ----------------------------------------------------------------------
+    # 3. IL QP SUL CASO DI STUDIO
+    # ----------------------------------------------------------------------
+    intestazione("QP sul caso di studio: tre valori di gamma")
+    GAMMA = [0.0, 0.001, 0.01]
+    ris = {}
+    for g in GAMMA:
+        m, x, v_ene = costruisci_qp(g)
+        m.optimize()
+        assert m.Status == GRB.OPTIMAL
+        spesa, z, salti, sq = leggi(x)
+        ris[g] = dict(obj=m.ObjVal, spesa=spesa, z=z, salti=salti, sq=sq,
+                      pi={v: v_ene[v].Pi for v in veicoli})
+        print(f"gamma = {g:5.3f}: obiettivo {m.ObjVal:7.2f} €  spesa {spesa:6.2f} €  "
+              f"picco {z.max():6.1f} kW  salto massimo {np.abs(salti).max():5.1f} kW  "
+              f"somma salti^2 {sq:8.1f}")
+    print(f"\nCosto della regolarità (gamma = 0,01): "
+          f"{ris[0.01]['spesa'] - ris[0.0]['spesa']:.2f} € a notte")
+
+    # ----------------------------------------------------------------------
+    # 4. MOLTIPLICATORI DEL FABBISOGNO NEL QP
+    # ----------------------------------------------------------------------
+    intestazione("Moltiplicatori del fabbisogno (€/kWh)")
     for v in veicoli:
-        print(f"  {v}: {v_ene[v].Pi:.4f} €/kWh")
+        print(f"  {v}: gamma=0 {ris[0.0]['pi'][v]:.4f}   gamma=0,001 {ris[0.001]['pi'][v]:.4f}   "
+              f"gamma=0,01 {ris[0.01]['pi'][v]:.4f}")
+    base_obj = ris[0.01]["obj"]
+    for eps in (1.0, 0.01):
+        en = {v: flotta[v][2] for v in veicoli}
+        en["V1"] += eps
+        m2, _, _ = costruisci_qp(0.01, en)
+        m2.optimize()
+        print(f"Verifica (gamma = 0,01): e_1 + {eps:g} kWh -> obiettivo da {base_obj:.4f} a "
+              f"{m2.ObjVal:.4f} (rapporto incrementale {(m2.ObjVal - base_obj) / eps:.4f}; "
+              f"Pi = {ris[0.01]['pi']['V1']:.4f})")
 
     # ----------------------------------------------------------------------
-    # 3. PEAK SHAVING (minimax) e PROFILO REGOLARE (QP)
+    # 5. SENSITIVITÀ: FRONTIERA COSTO-NERVOSISMO
     # ----------------------------------------------------------------------
-    intestazione("Peak shaving: minimizzare il picco di prelievo")
-    mp, xp, _, _ = costruisci()
-    z = mp.addVar(name="picco")
-    mp.addConstrs((gp.quicksum(xp[v, t] for v in veicoli) + base[t] <= z for t in ore),
-                  name="def_picco")
-    mp.setObjective(z, GRB.MINIMIZE)
-    mp.optimize()
-    prof_picco = profilo(xp)
-    costo_picco = sum(prezzo[t] * prof_picco[t] for t in ore)
-    print(f"Picco minimo possibile: {mp.ObjVal:.1f} kW   costo: {costo_picco:.2f} € "
-          f"(+{costo_picco - costo_min:.2f} € rispetto al costo minimo)")
-
-    intestazione("Compromesso: costo + rho · picco")
-    compromessi = []
-    for rho in [0, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0]:
-        mc, xc, _, _ = costruisci()
-        zc = mc.addVar(name="picco")
-        mc.addConstrs((gp.quicksum(xc[v, t] for v in veicoli) + base[t] <= zc for t in ore))
-        mc.setObjective(gp.quicksum(prezzo[t] * xc[v, t] for v in veicoli for t in ore)
-                        + rho * zc, GRB.MINIMIZE)
-        mc.optimize()
-        cc = sum(prezzo[t] * xc[v, t].X for v in veicoli for t in ore)
-        compromessi.append((rho, cc, zc.X))
-        print(f"  rho = {rho:4.2f}: costo {cc:6.2f} €, picco {zc.X:6.1f} kW")
-    salva_dati(pd.DataFrame(compromessi, columns=["rho", "costo", "picco"]), "ev_compromessi")
+    intestazione("Frontiera costo-nervosismo al variare di gamma")
+    griglia = [0.0, 0.0005, 0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.5]
+    front = []
+    for g in griglia:
+        m, x, _ = costruisci_qp(g)
+        m.optimize()
+        spesa, z, salti, sq = leggi(x)
+        front.append((g, spesa, sq, float(np.abs(salti).max()), float(z.max())))
+        print(f"  gamma = {g:6.4f}: spesa {spesa:6.2f} €  somma salti^2 {sq:8.1f}  "
+              f"salto max {np.abs(salti).max():5.1f} kW  picco {z.max():6.1f} kW")
+    front = pd.DataFrame(front, columns=["gamma", "spesa", "salti_quadrati", "salto_max", "picco"])
+    salva_dati(front, "ev_frontiera_regolarita")
 
     # ----------------------------------------------------------------------
-    # 4. SENSITIVITÀ: capacità del contatore
-    # ----------------------------------------------------------------------
-    intestazione("Sensitività: capacità della connessione alla rete")
-    # attenzione: nel vincolo "somma x + base[t] <= C" Gurobi sposta la costante base[t]
-    # nel termine noto; il RHS memorizzato è C - base[t], quindi va aggiornato così:
-    for CC in [60, 65, 70, 80, 90, 120]:
-        ms, xs_, _, vr = costruisci()
-        for t in ore:
-            vr[t].RHS = CC - base[t]
-        ms.setObjective(gp.quicksum(prezzo[t] * xs_[v, t] for v in veicoli for t in ore),
-                        GRB.MINIMIZE)
-        ms.optimize()
-        esito = f"costo {ms.ObjVal:6.2f} €" if ms.Status == GRB.OPTIMAL else "INAMMISSIBILE"
-        print(f"  C_rete = {CC:3d} kW: {esito}")
-
-    # ----------------------------------------------------------------------
-    # 5. FIGURE (dati pgfplots + anteprima matplotlib)
+    # 6. FIGURE (dati pgfplots + anteprima matplotlib)
     # ----------------------------------------------------------------------
     salva_dat(pd.DataFrame({"ora": ore, "prezzo_cent": prezzo * 100, "base": base,
-                            "totcosto": base + prof_costo, "totpicco": base + prof_picco}),
-              "cap10_profili")
-    salva_dat(pd.DataFrame(compromessi, columns=["rho", "costo", "picco"]), "cap10_frontiera")
+                            "gzero": ris[0.0]["z"], "gpiccolo": ris[0.001]["z"],
+                            "ggrande": ris[0.01]["z"]}), "cap10_profili_qp")
+    salva_dat(front[front["gamma"] > 0], "cap10_frontiera_qp")
 
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8.2, 6.4), sharex=True)
-    ax1.bar(ore, prezzo * 100, color=GRIGIO, alpha=0.6)
-    ax1.set_ylabel("prezzo (c€/kWh)")
-    ax1.set_title("Prezzo orario dell'energia")
-    ax2.plot(ore, base, color=GRIGIO, ls="--", label="carico di base")
-    ax2.plot(ore, base + prof_costo, color=TEAL, lw=2, drawstyle="steps-mid",
-             label="costo minimo")
-    ax2.plot(ore, base + prof_picco, color=ARANCIO, lw=2, drawstyle="steps-mid",
-             label="peak shaving")
-    ax2.axhline(C_rete, color=ROSSO, ls=":", label=f"limite rete {C_rete:.0f} kW")
-    ax2.set_xlabel("ora del giorno"); ax2.set_ylabel("prelievo totale (kW)")
-    ax2.set_title("Profilo di prelievo: inseguire i prezzi crea un picco notturno")
-    ax2.legend(fontsize=8, ncol=2)
-    salva_figura(fig, "cap10_profili")
+    fig, ax = plt.subplots(figsize=(8.2, 4.2))
+    ax.plot(ore, base, color=GRIGIO, ls="--", label="carico di base")
+    for g, c in zip(GAMMA, [TEAL, ARANCIO, VERDE]):
+        ax.plot(ore, ris[g]["z"], color=c, lw=2, drawstyle="steps-mid",
+                label=f"$\\gamma$ = {g} (spesa {ris[g]['spesa']:.2f} €)")
+    ax.axhline(C_rete, color=ROSSO, ls=":", label=f"limite rete {C_rete:.0f} kW")
+    ax.set_xlabel("ora del giorno"); ax.set_ylabel("prelievo totale (kW)")
+    ax.set_title("Il termine quadratico addolcisce il profilo di prelievo")
+    ax.legend(fontsize=8, ncol=2)
+    salva_figura(fig, "cap10_profili_qp")
 
-    comp = pd.DataFrame(compromessi, columns=["rho", "costo", "picco"])
+    f2 = front[front["gamma"] > 0]
     fig, ax = plt.subplots()
-    ax.plot(comp["picco"], comp["costo"], "-o", color=TEAL)
-    for _, r in comp.iterrows():
-        ax.annotate(f"  $\\rho$={r['rho']:.2f}", (r["picco"], r["costo"]), fontsize=8)
-    ax.set_xlabel("picco di prelievo (kW)")
-    ax.set_ylabel("costo di ricarica (€)")
-    ax.set_title("Frontiera costo-picco: ridurre il picco costa poco all'inizio")
-    salva_figura(fig, "cap10_frontiera")
+    ax.plot(f2["salti_quadrati"], f2["spesa"], "-o", color=TEAL)
+    ax.axhline(ris[0.0]["spesa"], color=ARANCIO, ls="--", label="spesa del piano LP")
+    ax.set_xscale("log")
+    ax.set_xlabel("somma dei salti al quadrato (kW²)")
+    ax.set_ylabel("spesa di ricarica (€)")
+    ax.set_title("Frontiera costo-nervosismo")
+    ax.legend()
+    salva_figura(fig, "cap10_frontiera_qp")
 
     print("\nFatto: capitolo 10.")
     ```
 
 ## Esercizi
 
-1. $e_1: 46 \to 47$ kWh: costo $+0{,}0947 = 0{,}09/0{,}95$ (verificato).
-2. V3 arriva alle 23: come cambiano costo e picco?
-3. Profilo regolare QP con $\gamma \sum_t (z_t - z_{t-1})^2$.
-4. Frontiera costo-emissioni con intensità carbonica oraria $g_t$.
-5. Capacità minima ammissibile per bisezione: $\tilde k = 68$ kW.
+1. **A mano** — nell'esempio porre $\gamma = 0{,}05$: calcolare $x_1$, $x_2$, spesa,
+   valore ottimo e moltiplicatore.
+2. **Verifica** — con $\gamma = 0{,}001$ verificare per perturbazione il moltiplicatore
+   del fabbisogno di V3.
+3. **Solo la ricarica** — penalizzare i salti di $\sum_v x_{vt}$ invece di $z_t$, con
+   $\gamma = 0{,}01$.
+4. **Penalità sulla potenza** — sostituire la penalità con $\gamma \sum_t z_t^2$,
+   $\gamma = 0{,}001$: che forma prende il prelievo notturno?
+5. **Contatore** — con $\gamma = 0{,}001$ ridurre il contatore a $k = 70$ kW.

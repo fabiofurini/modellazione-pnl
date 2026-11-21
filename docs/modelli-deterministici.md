@@ -1,24 +1,24 @@
 # Modelli deterministici
 
-Nove capitoli in cui tutti i dati sono noti: si decide con certezza, e il valore
+Otto capitoli in cui tutti i dati sono noti: si decide con certezza, e il valore
 sta nell'interrogare la soluzione (quanto vale una risorsa in più? dove si rompe
 il piano?).
 
-Dentro ci sono LP, QP, NLP convessi e un NLP non convesso: **cambia il linguaggio
+Dentro ci sono QP, NLP convessi e un NLP non convesso: **cambia il linguaggio
 del modello, non cambia il metodo di lavoro** --- si costruisce il modello, lo si
 risolve, si leggono i duali, si muovono i dati e si guarda che cosa resta in
 piedi.
 
 <div class="grid cards" markdown>
 
--   :material-factory: **Produzione e scorte**
+-   :material-factory: **Produzione con smoothing quadratico**
 
     ---
 
-    LP multiperiodale con scorte: il solver scopre il pre-build, i duali dicono
-    quanto vale un'ora di capacità. Variante QP con smoothing.
+    La variante quadratica del caso di produzione: una penalità sui salti livella
+    il piano; moltiplicatori del QP e frontiera costo-regolarità.
 
-    [:octicons-arrow-right-24: LP / QP](produzione.md)
+    [:octicons-arrow-right-24: QP convesso](produzione-quadratica.md)
 
 -   :material-truck-delivery: **Supply chain e CO₂**
 
@@ -27,7 +27,7 @@ piedi.
     Flusso a costo minimo, congestione convessa e frontiera costo-emissioni con
     il prezzo interno della CO₂.
 
-    [:octicons-arrow-right-24: LP / NLP](supplychain.md)
+    [:octicons-arrow-right-24: NLP convesso](supplychain.md)
 
 -   :material-chart-line: **Portafoglio di Markowitz**
 
@@ -65,14 +65,14 @@ piedi.
 
     [:octicons-arrow-right-24: NLP convesso](localizzazione.md)
 
--   :material-ev-station: **Ricarica di veicoli elettrici**
+-   :material-ev-station: **Ricarica EV con profilo regolare**
 
     ---
 
-    Costo minimo contro peak shaving, prezzi orari dell'energia e duali dei
-    fabbisogni.
+    La variante quadratica della ricarica notturna: il prelievo totale si addolcisce,
+    i moltiplicatori dei veicoli coincidono.
 
-    [:octicons-arrow-right-24: LP / QP](ricarica-ev.md)
+    [:octicons-arrow-right-24: QP convesso](ricarica-ev-quadratica.md)
 
 -   :material-account-clock: **Code e capacità di servizio**
 
@@ -82,14 +82,5 @@ piedi.
     servizio, robustezza alla domanda incerta.
 
     [:octicons-arrow-right-24: NLP convesso](code.md)
-
--   :material-bank: **Data Envelopment Analysis**
-
-    ---
-
-    L'efficienza relativa di dodici filiali con un LP per filiale: il duale
-    dà peer e target, il confronto CCR/BCC l'inefficienza di scala.
-
-    [:octicons-arrow-right-24: LP](dea.md)
 
 </div>

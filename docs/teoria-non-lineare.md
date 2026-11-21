@@ -2,9 +2,11 @@
 
 [:material-file-pdf-box: Dispensa (PDF)](pdf/dispensa-modellazione-pnl.pdf) · [:material-presentation: Slide del capitolo (PDF)](pdf/slide-02-richiami.pdf)
 
-Il secondo sottocapitolo dei richiami: convessità, programmazione quadratica e
-condizioni KKT — l'estensione non lineare della [teoria degli LP](teoria-lp.md).
-Chiude il protocollo di sensitività usato in ogni laboratorio.
+I richiami di teoria del corso: convessità, programmazione quadratica e
+condizioni KKT — l'estensione non lineare della teoria degli LP, richiamata in
+[Modellazione PL](https://fabiofurini.github.io/modellazione-pl/teoria-lp/) insieme al
+protocollo di sensitività. Insiemi e funzioni convesse sono trattati nel corso
+[Ottimizzazione convessa](https://fabiofurini.github.io/ottimizzazione-convessa/).
 
 ## Convessità e programmazione quadratica
 
@@ -74,14 +76,3 @@ il termine noto di $\varepsilon$, ri-ottimizzare, rapporto incrementale).
     procedura generale. Con termine noto $6 + \varepsilon$ l'ottimo cresce di
     $\approx 8\varepsilon$ (esatto: $\tilde f(d) = \tfrac{2}{3}d^2$, quindi
     $24 + 8\varepsilon + \tfrac{2}{3}\varepsilon^2$).
-
-## Il protocollo di sensitività (usato in ogni capitolo)
-
-1. **Scenario base**: risolvere, verificare, identificare i vincoli attivi.
-2. **One-at-a-time**: variare un parametro chiave su una griglia.
-3. **Prezzi ombra e costi ridotti**: confrontare il duale con una ri-ottimizzazione
-   perturbata; leggere $\bar c_j$ di ogni variabile a zero (la sua soglia di
-   convenienza).
-4. **Scenari**: pessimistico, centrale, ottimistico.
-5. **Trade-off**: costruire una frontiera (costo-servizio, rischio-rendimento…).
-6. **Stabilità**: dati ±5% → la raccomandazione regge?

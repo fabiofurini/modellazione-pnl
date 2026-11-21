@@ -2,8 +2,13 @@
 
 [:material-file-pdf-box: Dispensa (PDF)](pdf/dispensa-modellazione-pnl.pdf) · [:material-presentation: Slide del capitolo (PDF)](pdf/slide-03-python-gurobi.pdf)
 
+I comandi generali di `gurobipy` (costruire, far girare, leggere la soluzione) sono in
+[Modellazione PL, «Implementazione: modelli lineari»](https://fabiofurini.github.io/modellazione-pl/solver-lp/)
+e nella [guida al solver](https://github.com/fabiofurini/modellazione-pl/blob/main/GUIDA_GUROBI.md).
+Qui solo ciò che è proprio dei modelli non lineari.
+
 **Un solver solo: anche gli NLP generali si risolvono con Gurobi** (dalla
-versione 12), con la stessa sintassi e la stessa checklist dei modelli lineari.
+versione 12), con la stessa sintassi e la stessa checklist dei modelli lineari di Modellazione PL.
 Funzioni non lineari come vincoli funzionali su variabili ausiliarie — `addGenConstrLog`,
 `addGenConstrExp`, `addGenConstrPow` con `m.Params.FuncNonlinear = 1` — e termini bilineari
 con `m.Params.NonConvex = 2`: l'ottimo resta **globale certificato**. Esempi nel laboratorio:
@@ -23,7 +28,7 @@ m.addGenConstrLog(g, z)        # z = log(g);  anche Exp, Pow, Sin, ...
 m.addQConstr(w * v == 1)       # termini bilineari: servono NonConvex = 2
 ```
 
-Due accorgimenti pratici, entrambi usati negli script del laboratorio:
+Due accorgimenti pratici, entrambi usati negli script del corso:
 
 - **tolleranze**: per analisi marginali accurate (differenze tra due ottimi
   vicini) stringere `MIPGap`, `FeasibilityTol` e `OptimalityTol` a `1e-9`;
@@ -34,10 +39,17 @@ Due accorgimenti pratici, entrambi usati negli script del laboratorio:
 ## I moltiplicatori nei modelli non lineari
 
 Per QP/NLP convessi i moltiplicatori (`Pi` sui vincoli lineari, condizioni KKT in generale)
-hanno la stessa lettura marginale dei prezzi ombra. Verifica numerica consigliata nel
-laboratorio: perturbare il termine noto di ε e ricontrollare che
+hanno la stessa lettura marginale dei prezzi ombra. Verifica numerica consigliata nel corso: perturbare il termine noto di ε e ricontrollare che
 `nuovo_ottimo ≈ vecchio_ottimo + Pi·ε`.
 
+
+## I moltiplicatori nei QP convessi
+
+Nei QP convessi con vincoli lineari l'attributo `Pi` di ogni vincolo è il
+moltiplicatore KKT; per i vincoli quadratici serve `m.Params.QCPDual = 1` (attributo
+`QCPi`). A differenza degli LP il moltiplicatore è esatto solo al margine: la verifica
+per perturbazione si fa con un $\varepsilon$ piccolo (esempio nel capitolo
+[Produzione con smoothing quadratico](produzione-quadratica.md)).
 
 ## Perché un solver solo
 

@@ -1,6 +1,6 @@
 # Materiale scaricabile
 
-Tutto il materiale del laboratorio, in PDF, aggiornato a ogni pubblicazione del sito.
+Tutto il materiale del corso, in PDF, aggiornato a ogni pubblicazione del sito.
 Testi, figure e dati sono sotto licenza
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.it); gli script
 Python sotto licenza
@@ -10,13 +10,13 @@ Python sotto licenza
 
 <div class="grid cards" markdown>
 
--   :material-book-open-variant: **Dispensa del laboratorio**
+-   :material-book-open-variant: **Dispensa del corso**
 
     ---
 
     Modelli, esempi svolti, casi di studio e analisi di sensitività: gli
-    strumenti, i modelli deterministici, le decisioni sotto incertezza,
-    ottimizzazione e machine learning.
+    strumenti, i modelli deterministici non lineari, ottimizzazione e machine
+    learning.
 
     [:octicons-download-24: dispensa-modellazione-pnl.pdf](pdf/dispensa-modellazione-pnl.pdf)
 
@@ -42,38 +42,29 @@ Le slide delle lezioni, una per capitolo delle dispense (PDF).
 
     ---
 
-    - [Introduzione al laboratorio](pdf/slide-01-introduzione.pdf)
-    - [Richiami di teoria](pdf/slide-02-richiami.pdf)
-    - [Il solver: costruire, risolvere, interpretare](pdf/slide-03-python-gurobi.pdf)
+    - [Introduzione al corso](pdf/slide-01-introduzione.pdf)
+    - [Richiami: convessità, QP e KKT](pdf/slide-02-richiami.pdf)
+    - [Il solver per i modelli non lineari](pdf/slide-03-python-gurobi.pdf)
 
 -   :material-presentation: **Modelli deterministici**
 
     ---
 
-    - [Produzione e scorte multiperiodali](pdf/slide-04-produzione.pdf)
+    - [Produzione con smoothing quadratico](pdf/slide-04-produzione-quadratica.pdf)
     - [Supply chain con congestione e sostenibilità](pdf/slide-05-supply-chain.pdf)
     - [Portafoglio di Markowitz](pdf/slide-06-markowitz.pdf)
     - [Pricing e revenue management](pdf/slide-07-pricing.pdf)
     - [Allocazione del budget pubblicitario](pdf/slide-08-budget.pdf)
     - [Localizzazione continua di un servizio](pdf/slide-09-localizzazione.pdf)
-    - [Ricarica intelligente di veicoli elettrici](pdf/slide-10-ricarica-ev.pdf)
+    - [Ricarica EV con profilo regolare](pdf/slide-10-ricarica-ev-quadratica.pdf)
     - [Capacità di servizio e tempi di attesa](pdf/slide-11-code.pdf)
-    - [Data Envelopment Analysis](pdf/slide-12-dea.pdf)
-
--   :material-presentation: **Decisioni sotto incertezza**
-
-    ---
-
-    - [Il Newsvendor e le sue varianti](pdf/slide-13-newsvendor.pdf)
-    - [VaR e CVaR](pdf/slide-14-var-cvar.pdf)
-    - [Arbitraggio e prezzatura](pdf/slide-15-arbitraggio.pdf)
 
 -   :material-presentation: **Ottimizzazione e machine learning**
 
     ---
 
     - [Support Vector Machine](pdf/slide-12-svm.pdf)
-    - [Regressione robusta e quantile](pdf/slide-17-regressione.pdf)
+    - [Regressione ai minimi quadrati](pdf/slide-13-minimi-quadrati.pdf)
 
 </div>
 
