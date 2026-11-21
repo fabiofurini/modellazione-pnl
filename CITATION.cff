@@ -1,12 +1,13 @@
 cff-version: 1.2.0
 message: "Se usi questo materiale, per favore citalo come segue."
-title: "Laboratorio di Ricerca Operativa: modelli continui di ottimizzazione per l'Ingegneria Gestionale"
+title: "Modellazione PNL: modelli di programmazione non lineare con Python e Gurobi"
 abstract: >-
-  Materiale didattico completo del Laboratorio di Ricerca Operativa: dispensa
-  online, codice Python/Gurobi, dati e casi di studio. Diciotto capitoli su
-  teoria della programmazione lineare e non lineare, uso del solver, nove
-  modelli deterministici, decisioni sotto incertezza, ottimizzazione e machine
-  learning. Tutti i modelli usano solo variabili continue e un solo solver.
+  Materiale didattico completo di Modellazione PNL: dispensa online, codice
+  Python/Gurobi e casi di studio. Quattordici capitoli: convessità, QP e
+  condizioni KKT, solver non lineari, otto modelli deterministici non lineari
+  (comprese le varianti quadratiche di produzione e ricarica EV), SVM e
+  regressione ai minimi quadrati. Tutti i modelli usano solo variabili continue
+  e un solo solver.
 authors:
   - family-names: Furini
     given-names: Fabio
@@ -17,7 +18,7 @@ repository-code: "https://github.com/fabiofurini/modellazione-pnl"
 license:
   - CC-BY-4.0
   - MIT
-date-released: 2026-09-04
+date-released: 2026-11-21
 keywords:
   - ricerca operativa
   - ottimizzazione
