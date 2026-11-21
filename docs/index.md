@@ -164,13 +164,17 @@ Tutti i corsi della collana hanno la stessa impostazione: dispense online e in P
 
     garanzie di prestazione, schemi di approssimazione e limiti dell'approssimazione per i problemi combinatori
 
--   :material-vector-polygon: **[Modellazione MIP](https://fabiofurini.github.io/modellazione-mip/)**
+-   :material-chart-line: **[Modellazione PL](https://fabiofurini.github.io/modellazione-pl/)**
 
-    modelli di programmazione lineare a variabili intere, dalla formulazione alla soluzione con i solver
+    modelli di programmazione lineare per problemi gestionali, risolti con Python e Gurobi
 
 -   :material-chart-bell-curve-cumulative: **Modellazione PNL** · *questo corso*
 
     modelli di programmazione non lineare, dal portafoglio al machine learning, con Python e Gurobi
+
+-   :material-vector-polygon: **[Modellazione MIP](https://fabiofurini.github.io/modellazione-mip/)**
+
+    modelli di programmazione lineare a variabili intere, dalla formulazione alla soluzione con i solver
 
 </div>
 <!-- /collana -->
