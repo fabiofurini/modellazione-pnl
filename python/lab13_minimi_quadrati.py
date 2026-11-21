@@ -90,6 +90,8 @@ print(f"Se l'ultimo valore passa da 148 a 248: media {b0b:.4f} (+{b0b - b0:.4f})
 # ----------------------------------------------------------------------
 # 2. DATI (gli stessi del caso lineare: stesso generatore, stesso seme)
 # ----------------------------------------------------------------------
+# I dati sono quelli del caso lineare in Modellazione PL: si scrivono qui (stesso seme),
+# così lo script gira anche in Colab; i file CSV stanno nel repository di Modellazione PL.
 intestazione("Storico della panetteria: 60 giorni")
 rng = np.random.default_rng(16)
 n = 60
@@ -108,13 +110,6 @@ pioggia = np.round(rng.uniform(0, 12, n), 1)
 borsa = np.round(rng.uniform(95, 115, n), 1)
 giorno_mese = rng.integers(1, 29, n).astype(float)
 
-dati = pd.DataFrame({
-    "giorno": np.arange(1, n + 1), "domanda": domanda.astype(int),
-    "temperatura": temperatura, "prezzo": prezzo, "weekend": weekend.astype(int),
-    "follower": follower, "pioggia": pioggia, "indice_borsa": borsa,
-    "giorno_del_mese": giorno_mese.astype(int), "sciopero": anomalo.astype(int),
-})
-salva_dati(dati, "panetteria_storico")
 print(f"Domanda: min {domanda.min():.0f}, media {domanda.mean():.1f}, "
       f"max {domanda.max():.0f}   giorni di sciopero: {[g + 1 for g in giorni_sciopero]}")
 
