@@ -6,6 +6,22 @@
 
 [![Apri in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fabiofurini/modellazione-pnl/blob/main/notebooks/lab10_ricarica_ev_quadratica.ipynb)
 
+!!! nota "Prerequisiti"
+
+    - Dal modulo *Modellazione PL*, [Capitolo 5 «Ricarica intelligente di veicoli elettrici»](https://fabiofurini.github.io/modellazione-pl/ricarica-ev/): il modello lineare di ricarica, con i suoi dati.
+
+    - Da questo modulo, [Capitolo 2 «Richiami: convessità, programmazione quadratica e condizioni KKT»](https://fabiofurini.github.io/modellazione-pnl/teoria-non-lineare/): i programmi quadratici convessi, le condizioni KKT e i moltiplicatori come prezzi ombra.
+
+!!! chiave "Obiettivi"
+
+    Alla fine di questo capitolo sarai in grado di:
+
+    - penalizzare le variazioni di una grandezza aggregata con un termine quadratico;
+
+    - leggere il moltiplicatore del fabbisogno di energia in un QP;
+
+    - tracciare la frontiera fra spesa e irregolarità del prelievo.
+
 Il caso, i dati e il modello lineare sono quelli di
 [Modellazione PL, «Ricarica intelligente di veicoli elettrici»](https://fabiofurini.github.io/modellazione-pl/ricarica-ev/).
 La ricarica a costo minimo insegue le ore economiche: il prelievo totale sale fino a
@@ -95,6 +111,18 @@ Verifica (g = 0,01): e_1 + 1 kWh -> 0,0917;  e_1 + 0,01 kWh -> 0,0916
     La frontiera è ripida all'inizio: con 1,15 € in più a notte ($\gamma = 0{,}0005$)
     la somma dei salti al quadrato scende da 7.268 a 1.563. Oltre $\gamma = 0{,}1$ ogni
     ulteriore addolcimento costa molto.
+
+## In sintesi
+
+!!! chiave "In sintesi"
+
+    - Il termine quadratico penalizza ogni variazione del prelievo, non solo il picco.
+
+    - Il kWh marginale si divide fra le ore: nell'esempio costa il prezzo medio.
+
+    - Nel QP i moltiplicatori dei veicoli coincidono.
+
+    - La frontiera è ripida all'inizio: i primi passi di regolarizzazione costano poco.
 
 ## Codice
 

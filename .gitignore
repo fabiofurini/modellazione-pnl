@@ -39,3 +39,4 @@ __pycache__/
 # strumenti privati del laboratorio interattivo
 python/genera_laboratorio.py
 python/test_laboratorio.py
+python/genera_esercizi.py

@@ -6,6 +6,26 @@
 
 [![Apri in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fabiofurini/modellazione-pnl/blob/main/notebooks/lab09_localizzazione.ipynb)
 
+!!! nota "Prerequisiti"
+
+    - Dal modulo *Ottimizzazione convessa*, [Capitolo 1 «Insiemi convessi»](https://fabiofurini.github.io/ottimizzazione-convessa/preliminari/01-insiemi-convessi/): gli insiemi convessi, con cui si costruiscono i vincoli geografici.
+
+    - Da questo modulo, [Capitolo 2 «Richiami: convessità, programmazione quadratica e condizioni KKT»](https://fabiofurini.github.io/modellazione-pnl/teoria-non-lineare/): i programmi quadratici convessi, le condizioni KKT e i moltiplicatori come prezzi ombra.
+
+    - Da questo modulo, [Capitolo 3 «Il solver per i modelli non lineari»](https://fabiofurini.github.io/modellazione-pnl/solver-non-lineare/): i vincoli funzionali e le tolleranze in `gurobipy`.
+
+!!! chiave "Obiettivi"
+
+    Alla fine di questo capitolo sarai in grado di:
+
+    - formulare tre obiettivi di localizzazione e capire quando coincidono;
+
+    - scrivere le distanze euclidee con vincoli conici e risolverle con Gurobi da buoni punti di partenza;
+
+    - gestire vincoli geografici convessi;
+
+    - costruire una frontiera efficienza-equità con il metodo $\varepsilon$-vincolo.
+
 Dove collocare una stazione di ricarica, un micro-hub, un presidio sanitario per
 essere "vicini" alla domanda? Dipende da cosa significa vicini: distanza **media**
 (efficienza), **massima** (equità) o **quadratica** (baricentro). Tre obiettivi,
@@ -130,6 +150,18 @@ costa solo 47 metri di distanza media — l'equità qui è "quasi gratis", un ar
 fortissimo in una discussione pubblica. Il caso opposto (frontiera ripida)
 segnalerebbe un vero conflitto efficienza-equità.
 
+
+## In sintesi
+
+!!! chiave "In sintesi"
+
+    - Weber minimizza la distanza media pesata, il minimax la distanza massima, l'obiettivo quadratico dà il baricentro.
+
+    - Le distanze euclidee si scrivono con vincoli conici convessi.
+
+    - La scelta dell'obiettivo è la decisione gestionale; un vincolo temuto può costare quasi nulla.
+
+    - La frontiera efficienza-equità misura quanto costa l'equità.
 
 ## Codice
 

@@ -6,6 +6,24 @@
 
 [![Apri in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fabiofurini/modellazione-pnl/blob/main/notebooks/lab05_supplychain.ipynb)
 
+!!! nota "Prerequisiti"
+
+    - Dal modulo *Modellazione PL*, [Capitolo 2 «Richiami: programmazione lineare e analisi di sensitività»](https://fabiofurini.github.io/modellazione-pl/teoria-lp/): prezzi ombra, costi ridotti e i loro intervalli.
+
+    - Da questo modulo, [Capitolo 2 «Richiami: convessità, programmazione quadratica e condizioni KKT»](https://fabiofurini.github.io/modellazione-pnl/teoria-non-lineare/): i programmi quadratici convessi, le condizioni KKT e i moltiplicatori come prezzi ombra.
+
+!!! chiave "Obiettivi"
+
+    Alla fine di questo capitolo sarai in grado di:
+
+    - formulare un problema di flusso a costo minimo con vincoli di conservazione;
+
+    - modellare la congestione con termini quadratici convessi;
+
+    - tracciare una frontiera costi-emissioni con un prezzo interno della CO$_2$;
+
+    - capire perché le soluzioni degli LP saltano da un vertice all'altro.
+
 I prodotti attraversano una rete di stabilimenti, hub e mercati. Ogni tratta ha
 costo, capacità e impronta di CO₂. Come instradare i flussi al minimo costo? Cosa
 cambia penalizzando la congestione? Quanto deve valere la CO₂ perché le rotte
@@ -129,6 +147,18 @@ strettamente convesso, si sposterebbe invece con continuità.
     Il minimax "puro" ($\min z$) accetta qualunque instradamento con utilizzo
     $\le \tilde z$, anche costosissimo: combinare sempre con il costo.
 
+
+## In sintesi
+
+!!! chiave "In sintesi"
+
+    - I prezzi ombra della domanda sono i costi marginali di servizio dei mercati; i costi ridotti degli archi non usati sono soglie di convenienza.
+
+    - La congestione modellata con termini quadratici abbassa l'utilizzo massimo a un costo maggiore.
+
+    - Al variare del prezzo della CO$_2$ $\tau$ si traccia la frontiera costi-emissioni: in un LP l'ottimo salta fra vertici, un modello strettamente convesso si muove con continuità.
+
+    - Il minimax puro è degenere: va combinato con il costo.
 
 ## Codice
 

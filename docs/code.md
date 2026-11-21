@@ -6,6 +6,26 @@
 
 [![Apri in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fabiofurini/modellazione-pnl/blob/main/notebooks/lab11_code.ipynb)
 
+!!! nota "Prerequisiti"
+
+    - Dal modulo *Ottimizzazione convessa*, [Capitolo 3 «Funzioni convesse e concave»](https://fabiofurini.github.io/ottimizzazione-convessa/preliminari/03-funzioni-convesse-concave/): le funzioni convesse di una variabile e la loro minimizzazione.
+
+    - Da questo modulo, [Capitolo 2 «Richiami: convessità, programmazione quadratica e condizioni KKT»](https://fabiofurini.github.io/modellazione-pnl/teoria-non-lineare/): i programmi quadratici convessi, le condizioni KKT e i moltiplicatori come prezzi ombra.
+
+    - Da questo modulo, [Capitolo 3 «Il solver per i modelli non lineari»](https://fabiofurini.github.io/modellazione-pnl/solver-non-lineare/): i vincoli funzionali e la stima dei prezzi ombra per perturbazione.
+
+!!! chiave "Obiettivi"
+
+    Alla fine di questo capitolo sarai in grado di:
+
+    - usare le formule della coda M/M/1 dentro un problema di ottimizzazione;
+
+    - ricavare l'ottimo analiticamente e confermarlo numericamente;
+
+    - dare un prezzo a una promessa di servizio;
+
+    - proteggere il dimensionamento dall'incertezza sulla domanda.
+
 Quanta capacità assegnare a un call center, uno sportello, un servizio cloud? Più
 capacità costa; poca capacità fa esplodere le attese. Messaggio centrale,
 contro-intuitivo per chi ragiona "a efficienza": **l'utilizzazione ottima non è il
@@ -122,6 +142,18 @@ diverge (costo infinito). Minimizzare il costo del caso peggiore dà
 $\mu_{\text{rob}} = 52{,}90$ con costo worst-case 173,39 €/h: si paga un premio
 assicurativo di circa il 13% per essere protetti da un disastro.
 
+
+## In sintesi
+
+!!! chiave "In sintesi"
+
+    - Il costo totale $c\mu + h\lambda/(\mu-\lambda)$ è convesso, con ottimo $\mu^* = \lambda + \sqrt{h\lambda/c}$: la domanda più un margine di sicurezza.
+
+    - L'utilizzo ottimo non è il 100\%: vicino alla saturazione il tempo di attesa esplode.
+
+    - Una promessa $w \le w_{\max}$ diventa $\mu \ge \lambda + 1/w_{\max}$, e il suo prezzo ombra esplode per promesse ambiziose.
+
+    - Dimensionare sulla domanda media può rendere la coda instabile: la soluzione robusta costa di più e protegge dal disastro.
 
 ## Codice
 

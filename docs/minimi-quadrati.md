@@ -6,6 +6,26 @@
 
 [![Apri in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fabiofurini/modellazione-pnl/blob/main/notebooks/lab13_minimi_quadrati.ipynb)
 
+!!! nota "Prerequisiti"
+
+    - Dal modulo *Modellazione PL*, [Capitolo 10 «Regressione robusta e quantile: stimare i parametri con un LP»](https://fabiofurini.github.io/modellazione-pl/regressione/): la regressione con scarti assoluti e quantili come LP, sugli stessi dati.
+
+    - Da questo modulo, [Capitolo 2 «Richiami: convessità, programmazione quadratica e condizioni KKT»](https://fabiofurini.github.io/modellazione-pnl/teoria-non-lineare/): i programmi quadratici convessi, le condizioni KKT e i moltiplicatori come prezzi ombra.
+
+    - Dal modulo *Algebra lineare*, [Capitolo 6 «Sistemi di equazioni lineari»](https://fabiofurini.github.io/algebra-lineare/sistemi/01-sistemi-lineari/): i sistemi lineari, da cui vengono le equazioni normali.
+
+!!! chiave "Obiettivi"
+
+    Alla fine di questo capitolo sarai in grado di:
+
+    - scrivere i minimi quadrati come QP;
+
+    - leggere le condizioni KKT come equazioni normali;
+
+    - confrontare minimi quadrati, scarti assoluti e quantili sugli stessi dati;
+
+    - restringere i coefficienti con una penalità quadratica (ridge).
+
 Il caso, i dati e il modello lineare sono quelli di
 [Modellazione PL, «Regressione robusta e quantile»](https://fabiofurini.github.io/modellazione-pl/regressione/):
 sessanta giorni di vendite di una panetteria, cinque dei quali durante due scioperi.
@@ -94,6 +114,18 @@ i coefficienti si restringono, ma nessuno si azzera; il budget sui valori assolu
 Modellazione PL, invece, lascia fuori le caratteristiche inutili.
 
 ![Coefficienti ridge](img/cap13_ridge.png)
+
+## In sintesi
+
+!!! chiave "In sintesi"
+
+    - I minimi quadrati sono un QP convesso, e le loro condizioni KKT sono le equazioni normali.
+
+    - Stimano la media: ottimi con errori simmetrici, fragili con gli outlier, dove gli scarti assoluti tengono meglio.
+
+    - Per il newsvendor si usa la media più una scorta, oppure direttamente il quantile.
+
+    - Il ridge stabilizza i coefficienti; un budget lineare su di essi seleziona le variabili esplicative.
 
 ## Codice
 

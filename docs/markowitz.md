@@ -6,6 +6,24 @@
 
 [![Apri in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fabiofurini/modellazione-pnl/blob/main/notebooks/lab06_markowitz.ipynb)
 
+!!! nota "Prerequisiti"
+
+    - Da questo modulo, [Capitolo 2 «Richiami: convessità, programmazione quadratica e condizioni KKT»](https://fabiofurini.github.io/modellazione-pnl/teoria-non-lineare/): i programmi quadratici convessi, le condizioni KKT e i moltiplicatori come prezzi ombra.
+
+    - Dal modulo *Ottimizzazione convessa*, [Capitolo 4 «Funzioni quadratiche»](https://fabiofurini.github.io/ottimizzazione-convessa/preliminari/04-funzioni-quadratiche/): le forme quadratiche e le matrici di covarianza come matrici semidefinite positive.
+
+!!! chiave "Obiettivi"
+
+    Alla fine di questo capitolo sarai in grado di:
+
+    - formulare e risolvere un QP convesso;
+
+    - costruire e leggere la frontiera efficiente;
+
+    - capire l'effetto dei vincoli di mandato;
+
+    - diffidare delle stime dei rendimenti attesi.
+
 Quanto investire in ciascun titolo per bilanciare rendimento atteso e rischio? Il
 risultato non è un numero ma una **frontiera efficiente**: il menu completo dei
 compromessi tra cui il decisore sceglie.
@@ -127,6 +145,18 @@ $\bar r = 12\%$).
     inseguono gli errori di stima. Rimedi: vincoli $u_i$, shrinkage delle stime,
     oppure ottimizzare solo il rischio (minima varianza).
 
+
+## In sintesi
+
+!!! chiave "In sintesi"
+
+    - Markowitz minimizza la varianza del portafoglio con un rendimento atteso minimo: un QP convesso.
+
+    - Lungo la frontiera efficiente si passa dal mix difensivo ai titoli ad alto rendimento; i vincoli di mandato hanno un costo visibile.
+
+    - Sotto il rendimento di minima varianza il vincolo di rendimento non è attivo e il suo moltiplicatore è nullo; oltre, ogni punto di rendimento costa varianza.
+
+    - Le stime dei rendimenti attesi sono fragili: tetti, shrinkage e minima varianza sono i rimedi.
 
 ## Codice
 

@@ -6,6 +6,24 @@
 
 [![Apri in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fabiofurini/modellazione-pnl/blob/main/notebooks/lab04_produzione_quadratica.ipynb)
 
+!!! nota "Prerequisiti"
+
+    - Dal modulo *Modellazione PL*, [Capitolo 4 «Produzione e scorte multiperiodali»](https://fabiofurini.github.io/modellazione-pl/produzione/): il modello lineare di produzione e scorte, con i suoi dati.
+
+    - Da questo modulo, [Capitolo 2 «Richiami: convessità, programmazione quadratica e condizioni KKT»](https://fabiofurini.github.io/modellazione-pnl/teoria-non-lineare/): i programmi quadratici convessi, le condizioni KKT e i moltiplicatori come prezzi ombra.
+
+    - Da questo modulo, [Capitolo 3 «Il solver per i modelli non lineari»](https://fabiofurini.github.io/modellazione-pnl/solver-non-lineare/): gli obiettivi quadratici e i moltiplicatori di un QP in `gurobipy`.
+
+!!! chiave "Obiettivi"
+
+    Alla fine di questo capitolo sarai in grado di:
+
+    - aggiungere un termine quadratico convesso a un modello lineare;
+
+    - leggere i moltiplicatori di un QP e verificarli per perturbazione;
+
+    - tracciare la frontiera costo-regolarità al variare del peso.
+
 Il caso, i dati e il modello lineare sono quelli di
 [Modellazione PL, «Produzione e scorte»](https://fabiofurini.github.io/modellazione-pl/produzione/).
 Il piano a costo minimo cambia ritmo bruscamente: la produzione totale passa da
@@ -93,6 +111,18 @@ Verifica: +0,01 ore nel mese 6 -> rapporto incrementale -3,133
     I primi passi verso la regolarità costano pochissimo: con $\gamma = 0{,}01$ la
     somma dei salti al quadrato scende da 13.699 a 2.075 per 48 €. Un piano quasi
     piatto costa circa 112 € su 33.000.
+
+## In sintesi
+
+!!! chiave "In sintesi"
+
+    - Un termine quadratico convesso aggiunto a un LP dà un QP convesso.
+
+    - Il peso $\gamma$ traccia la frontiera costo-regolarità: i primi passi costano poco.
+
+    - I moltiplicatori del QP si leggono con `Pi`, ma valgono al margine.
+
+    - Un termine nuovo può cambiare la struttura della soluzione.
 
 ## Codice
 

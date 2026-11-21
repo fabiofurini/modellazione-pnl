@@ -6,6 +6,24 @@
 
 [![Apri in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fabiofurini/modellazione-pnl/blob/main/notebooks/lab07_pricing.ipynb)
 
+!!! nota "Prerequisiti"
+
+    - Da questo modulo, [Capitolo 2 «Richiami: convessità, programmazione quadratica e condizioni KKT»](https://fabiofurini.github.io/modellazione-pnl/teoria-non-lineare/): i programmi quadratici convessi, le condizioni KKT e i moltiplicatori come prezzi ombra.
+
+    - Da questo modulo, [Capitolo 3 «Il solver per i modelli non lineari»](https://fabiofurini.github.io/modellazione-pnl/solver-non-lineare/): i vincoli bilineari e `NonConvex = 2`; i prezzi ombra stimati per perturbazione.
+
+!!! chiave "Obiettivi"
+
+    Alla fine di questo capitolo sarai in grado di:
+
+    - modellare la domanda in funzione del prezzo e capire quando il profitto è concavo;
+
+    - gestire un obiettivo bilineare non convesso;
+
+    - valutare correttamente la capacità: un posto in più non vale il margine pieno;
+
+    - riconoscere gli ottimi d'angolo, dove nessuna derivata si annulla.
+
 Quale prezzo massimizza il profitto quando la domanda diminuisce al crescere del
 prezzo? Qui il prezzo è una *variabile*: la domanda diventa endogena e il profitto
 $p \cdot q$ introduce un termine bilineare — il primo incontro con la non convessità.
@@ -125,6 +143,18 @@ ciascuna sala presa da sola: il modello sfrutta la sostituzione, tenendo la plat
 cara per spingere domanda verso la galleria. Con prodotti sostituti i prezzi vanno
 decisi **congiuntamente**: ottimizzarli uno alla volta lascia soldi sul tavolo.
 
+
+## In sintesi
+
+!!! chiave "In sintesi"
+
+    - Con domanda lineare il profitto è concavo; quando la capacità è attiva il prezzo sale fino a riempirla esattamente.
+
+    - Un posto in più vale $p^* - c - k/b$, non il margine pieno: la capacità ha valore solo finché è attiva.
+
+    - Gurobi risolve il modello bilineare all'ottimo globale con `NonConvex = 2`; senza duali, il valore di un posto si stima per perturbazione.
+
+    - Con prodotti sostituti i prezzi vanno decisi insieme; con profitto non concavo: studio della funzione, più punti di partenza, un grafico.
 
 ## Codice
 

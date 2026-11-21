@@ -6,6 +6,26 @@
 
 [![Apri in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fabiofurini/modellazione-pnl/blob/main/notebooks/lab12_svm.ipynb)
 
+!!! nota "Prerequisiti"
+
+    - Da questo modulo, [Capitolo 2 «Richiami: convessità, programmazione quadratica e condizioni KKT»](https://fabiofurini.github.io/modellazione-pnl/teoria-non-lineare/): i programmi quadratici convessi, le condizioni KKT e i moltiplicatori come prezzi ombra.
+
+    - Dal modulo *Ottimizzazione convessa*, [Capitolo 6 «Problemi di ottimizzazione convessi e concavi»](https://fabiofurini.github.io/ottimizzazione-convessa/problemi/06-problemi-convessi-concavi/): i problemi di ottimizzazione convessi e le loro condizioni di ottimalità.
+
+    - Da questo modulo, [Capitolo 3 «Il solver per i modelli non lineari»](https://fabiofurini.github.io/modellazione-pnl/solver-non-lineare/): gli obiettivi quadratici in `gurobipy`.
+
+!!! chiave "Obiettivi"
+
+    Alla fine di questo capitolo sarai in grado di:
+
+    - formulare la classificazione a margine rigido e morbido come QP;
+
+    - ricavare e risolvere il duale, riconoscendo i vettori di supporto;
+
+    - ottenere frontiere non lineari con i kernel restando nel mondo convesso;
+
+    - gestire classi sbilanciate con costi asimmetrici e valutare con le metriche giuste.
+
 La SVM collega l'ottimizzazione convessa al machine learning: il classificatore si
 ottiene risolvendo un QP. Qui **niente librerie di ML**: ogni modello è un QP
 scritto e risolto con Gurobi, per capire *che cosa* ottimizza un classificatore.
@@ -213,6 +233,18 @@ Retta SVR: domanda = -10,86 * prezzo + 220,32    (vera: -11p + 220)
 Tubo eps = 8: 14 punti su 40 fuori dal tubo -> solo loro determinano la retta
 ```
 
+
+## In sintesi
+
+!!! chiave "In sintesi"
+
+    - Massimizzare il margine è un QP convesso; il margine morbido paga le violazioni con un prezzo $C$.
+
+    - Nel duale solo i vettori di supporto hanno moltiplicatori non nulli, e solo loro determinano la frontiera.
+
+    - Un kernel sostituisce il prodotto scalare nel duale: frontiere non lineari, sempre un QP convesso; $C$ e $\gamma$ si scelgono per convalida incrociata.
+
+    - Con classi sbilanciate due prezzi $C_-$ e $C_+$ riflettono i costi delle decisioni; si valuta con precision e recall.
 
 ## Codice
 

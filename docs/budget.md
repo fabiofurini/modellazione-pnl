@@ -6,6 +6,26 @@
 
 [![Apri in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fabiofurini/modellazione-pnl/blob/main/notebooks/lab08_budget.ipynb)
 
+!!! nota "Prerequisiti"
+
+    - Dal modulo *Ottimizzazione convessa*, [Capitolo 3 «Funzioni convesse e concave»](https://fabiofurini.github.io/ottimizzazione-convessa/preliminari/03-funzioni-convesse-concave/): le funzioni concave e i rendimenti decrescenti.
+
+    - Da questo modulo, [Capitolo 2 «Richiami: convessità, programmazione quadratica e condizioni KKT»](https://fabiofurini.github.io/modellazione-pnl/teoria-non-lineare/): i programmi quadratici convessi, le condizioni KKT e i moltiplicatori come prezzi ombra.
+
+    - Da questo modulo, [Capitolo 3 «Il solver per i modelli non lineari»](https://fabiofurini.github.io/modellazione-pnl/solver-non-lineare/): i vincoli funzionali per le funzioni non lineari in `gurobipy`.
+
+!!! chiave "Obiettivi"
+
+    Alla fine di questo capitolo sarai in grado di:
+
+    - modellare i rendimenti decrescenti con funzioni concave;
+
+    - risolvere NLP convessi con i vincoli funzionali di Gurobi;
+
+    - verificare numericamente le condizioni KKT;
+
+    - costruire la curva del valore del budget e usare $\lambda$ per negoziare il budget.
+
 Come ripartire una campagna da 100.000 € tra canali con rendimenti marginali
 decrescenti? La teoria dice qualcosa di forte e verificabile: **all'ottimo i
 rendimenti marginali si eguagliano** — ed è esattamente ciò che il solver
@@ -118,6 +138,18 @@ budget smette di essere la risorsa scarsa e $\lambda$ crolla a zero. La curva di
 $\lambda$ è l'argomento quantitativo per negoziare il budget: si finanzia il
 marketing finché $\lambda$ supera il rendimento di un euro investito altrove.
 
+
+## In sintesi
+
+!!! chiave "In sintesi"
+
+    - Le risposte logaritmiche sono concave: massimizzarne la somma con un budget è un problema convesso con ottimo globale certificato.
+
+    - Gurobi tratta il logaritmo con un vincolo funzionale dopo la riformulazione $z_i = \log(1 + k_i x_i)$.
+
+    - All'ottimo i rendimenti marginali dei canali sotto il tetto coincidono con $\lambda$, come prevedono le condizioni KKT.
+
+    - La risposta cresce con il budget in modo concavo e $\lambda$ cala: la sua curva è lo strumento per negoziare il budget.
 
 ## Codice
 

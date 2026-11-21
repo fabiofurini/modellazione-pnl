@@ -2,6 +2,24 @@
 
 [:material-file-pdf-box: Dispensa (PDF)](pdf/dispensa-modellazione-pnl.pdf) · [:material-presentation: Slide del capitolo (PDF)](pdf/slide-03-python-gurobi.pdf)
 
+!!! nota "Prerequisiti"
+
+    - Dal modulo *Modellazione PL*, [Capitolo 3 «Il solver: costruire, risolvere, interpretare»](https://fabiofurini.github.io/modellazione-pl/solver-lp/): i comandi generali di `gurobipy`: costruire, risolvere, leggere la soluzione.
+
+    - Da questo modulo, [Capitolo 2 «Richiami: convessità, programmazione quadratica e condizioni KKT»](https://fabiofurini.github.io/modellazione-pnl/teoria-non-lineare/): i QP convessi e i moltiplicatori KKT.
+
+!!! chiave "Obiettivi"
+
+    Alla fine di questo capitolo sarai in grado di:
+
+    - scrivere funzioni non lineari con vincoli funzionali $y = f(x)$ e rapporti con vincoli bilineari;
+
+    - scegliere tolleranze e riformulazioni che diano un buon scaling;
+
+    - leggere i moltiplicatori di un QP convesso con `Pi`;
+
+    - stimare un prezzo ombra per perturbazione quando il solver non dà i duali.
+
 I comandi generali di `gurobipy` (costruire, far girare, leggere la soluzione) sono in
 [Modellazione PL, «Implementazione: modelli lineari»](https://fabiofurini.github.io/modellazione-pl/solver-lp/)
 e nella [guida al solver](https://github.com/fabiofurini/modellazione-pl/blob/main/GUIDA_GUROBI.md).
@@ -74,3 +92,15 @@ Stessa sintassi, stessa checklist di interpretazione e — soprattutto — ottim
 risultato andrebbe accompagnato dalla domanda «è solo un ottimo locale?». I
 problemi convessi con sola struttura quadratica o conica (vincoli come
 `dx² + dy² ≤ d²`) non richiedono nulla di speciale.
+
+## In sintesi
+
+!!! chiave "In sintesi"
+
+    - Le funzioni non lineari entrano con vincoli funzionali $y = f(x)$; i rapporti con vincoli bilineari e `NonConvex = 2`.
+
+    - Le analisi marginali vogliono tolleranze strette; una buona riformulazione migliora lo scaling.
+
+    - In un QP convesso i moltiplicatori si leggono con `Pi`; senza duali, i prezzi ombra si stimano per perturbazione.
+
+    - Un solo solver per tutti i modelli: la stessa sintassi, e un ottimo globale certificato.

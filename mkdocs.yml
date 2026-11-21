@@ -147,6 +147,7 @@ nav:
       - ottimizzazione-ml.md
       - Support Vector Machine: svm.md
       - Regressione ai minimi quadrati: minimi-quadrati.md
+  - Esercizi: esercizi/index.md
   - Quiz: autovalutazione.md
   - Laboratorio: laboratorio/index.md
   - Materiale: materiale.md

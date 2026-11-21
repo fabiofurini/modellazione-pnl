@@ -2,6 +2,26 @@
 
 [:material-file-pdf-box: Dispensa (PDF)](pdf/dispensa-modellazione-pnl.pdf) · [:material-presentation: Slide del capitolo (PDF)](pdf/slide-02-richiami.pdf)
 
+!!! nota "Prerequisiti"
+
+    - Dal modulo *Ottimizzazione convessa*, [Capitolo 3 «Funzioni convesse e concave»](https://fabiofurini.github.io/ottimizzazione-convessa/preliminari/03-funzioni-convesse-concave/): funzioni convesse e concave e la loro caratterizzazione al secondo ordine.
+
+    - Dal modulo *Ottimizzazione convessa*, [Capitolo 4 «Funzioni quadratiche»](https://fabiofurini.github.io/ottimizzazione-convessa/preliminari/04-funzioni-quadratiche/): le funzioni quadratiche e le matrici semidefinite positive.
+
+    - Dal modulo *Modellazione PL*, [Capitolo 2 «Richiami: programmazione lineare e analisi di sensitività»](https://fabiofurini.github.io/modellazione-pl/teoria-lp/): la dualità della PL, gli scarti complementari e i prezzi ombra.
+
+!!! chiave "Obiettivi"
+
+    Alla fine di questo capitolo sarai in grado di:
+
+    - riconoscere un problema convesso e usare il fatto che ogni minimo locale è globale;
+
+    - decidere dalla matrice $\boldsymbol Q$ se un QP è convesso;
+
+    - scrivere le condizioni KKT di un problema e usarle per verificare una soluzione;
+
+    - leggere i moltiplicatori come prezzi ombra e stimarli per perturbazione.
+
 I richiami di teoria del corso: convessità, programmazione quadratica e
 condizioni KKT — l'estensione non lineare della teoria degli LP, richiamata in
 [Modellazione PL](https://fabiofurini.github.io/modellazione-pl/teoria-lp/) insieme al
@@ -76,3 +96,15 @@ il termine noto di $\varepsilon$, ri-ottimizzare, rapporto incrementale).
     procedura generale. Con termine noto $6 + \varepsilon$ l'ottimo cresce di
     $\approx 8\varepsilon$ (esatto: $\tilde f(d) = \tfrac{2}{3}d^2$, quindi
     $24 + 8\varepsilon + \tfrac{2}{3}\varepsilon^2$).
+
+## In sintesi
+
+!!! chiave "In sintesi"
+
+    - In un problema convesso ogni minimo locale è globale; un QP è convesso se e solo se $\boldsymbol Q \succeq 0$.
+
+    - Le condizioni KKT sono stazionarietà della lagrangiana, ammissibilità e complementarità; nei problemi convessi sono sufficienti.
+
+    - Nel caso lineare le condizioni KKT si riducono agli scarti complementari.
+
+    - I moltiplicatori sono prezzi ombra, e si possono stimare anche per perturbazione.
