@@ -1,34 +1,34 @@
-"""Capitolo 10 — Ricarica intelligente di veicoli elettrici (LP / QP convesso).
+"""Capitolo 10 — Ricarica di veicoli elettrici con profilo regolare (QP convesso).
 
-Caso di studio: deposito aziendale con 6 furgoni elettrici da ricaricare
-durante la notte; prezzi orari dell'energia; carico di base dell'edificio.
+Caso di studio: lo stesso del modello lineare di ricarica (Modellazione PL):
+deposito aziendale con 6 furgoni elettrici da ricaricare durante la notte,
+prezzi orari dell'energia, carico di base dell'edificio. Qui si aggiunge in
+obiettivo una penalità quadratica sulle variazioni del prelievo totale.
 
 Contenuto:
-  1. LP a costo minimo: la ricarica insegue le ore economiche
-  2. Peak shaving: minimizzare il picco di prelievo (minimax)
-  3. Profilo regolare (QP) e confronto multiobiettivo costo-picco
-  4. Prezzi ombra: capacità di rete e fabbisogno energetico
+  1. Dati (gli stessi del caso lineare)
+  2. Esempio svolto a mano: un veicolo, due ore
+  3. Il QP sul caso di studio per tre valori di gamma
+  4. Moltiplicatori del fabbisogno nel QP e verifica per perturbazione
+  5. Sensitività: la frontiera costo-nervosismo al variare di gamma
 """
 import gurobipy as gp
 import numpy as np
 import pandas as pd
 from gurobipy import GRB
 
-from stile import (ARANCIO, GRIGIO, ROSSO, TEAL, intestazione, plt, salva_dat, salva_dati,
-                   salva_figura)
+from stile import (ARANCIO, GRIGIO, ROSSO, TEAL, VERDE, intestazione, plt, salva_dat,
+                   salva_dati, salva_figura)
 
 # ----------------------------------------------------------------------
-# 1. DATI
+# 1. DATI (gli stessi del caso lineare)
 # ----------------------------------------------------------------------
 ore = list(range(24))                      # ora t = [t, t+1)
-# prezzo €/kWh: alto di giorno e nel picco serale, basso di notte
 prezzo = np.array([0.09, 0.08, 0.07, 0.07, 0.08, 0.10, 0.14, 0.18, 0.20, 0.19,
                    0.17, 0.16, 0.15, 0.15, 0.16, 0.18, 0.21, 0.24, 0.26, 0.24,
                    0.20, 0.15, 0.12, 0.10])
-# carico di base dell'edificio (kW)
 base = np.array([22, 20, 19, 19, 20, 24, 35, 48, 60, 63, 65, 64,
                  62, 61, 62, 64, 66, 68, 62, 55, 45, 36, 30, 25], dtype=float)
-
 veicoli = [f"V{k}" for k in range(1, 7)]
 # (ora arrivo, ora partenza, energia richiesta kWh, potenza max kW)
 flotta = {
@@ -37,7 +37,6 @@ flotta = {
 }
 eta = 0.95            # rendimento di carica
 C_rete = 120.0        # potenza massima prelevabile dal contatore (kW)
-
 disp = {(v, t): 1 if (flotta[v][0] <= t or t < flotta[v][1]) else 0
         for v in veicoli for t in ore}      # finestre a cavallo della mezzanotte
 
@@ -47,117 +46,130 @@ salva_dati(pd.DataFrame([(v, *flotta[v]) for v in veicoli],
            "ev_flotta")
 
 
-def costruisci():
-    m = gp.Model("ricarica_ev")
+def costruisci_qp(gamma, energia=None):
+    """QP: spesa energetica + gamma * somma dei salti del prelievo totale al quadrato."""
+    energia = energia or {v: flotta[v][2] for v in veicoli}
+    m = gp.Model("ricarica_ev_qp")
     m.Params.OutputFlag = 0
     x = m.addVars(veicoli, ore, name="x")       # potenza di carica (kW)
     for v in veicoli:
         for t in ore:
             x[v, t].UB = flotta[v][3] * disp[v, t]     # 0 se non collegato
-    v_ene = m.addConstrs((eta * gp.quicksum(x[v, t] for t in ore) >= flotta[v][2]
+    v_ene = m.addConstrs((eta * gp.quicksum(x[v, t] for t in ore) >= energia[v]
                           for v in veicoli), name="energia")
-    v_rete = m.addConstrs((gp.quicksum(x[v, t] for v in veicoli) + base[t] <= C_rete
-                           for t in ore), name="rete")
-    return m, x, v_ene, v_rete
+    m.addConstrs((gp.quicksum(x[v, t] for v in veicoli) + base[t] <= C_rete for t in ore),
+                 name="rete")
+    z = {t: gp.quicksum(x[v, t] for v in veicoli) + base[t] for t in ore}
+    spesa = gp.quicksum(prezzo[t] * x[v, t] for v in veicoli for t in ore)
+    salti = gp.quicksum((z[t] - z[t - 1]) * (z[t] - z[t - 1]) for t in ore[1:])
+    m.setObjective(spesa + gamma * salti, GRB.MINIMIZE)
+    return m, x, v_ene
 
 
-def profilo(x):
-    return np.array([sum(x[v, t].X for v in veicoli) for t in ore])
+def leggi(x):
+    carica = np.array([sum(x[v, t].X for v in veicoli) for t in ore])
+    z = carica + base
+    salti = np.diff(z)
+    spesa = float(prezzo @ carica)
+    return spesa, z, salti, float((salti ** 2).sum())
 
 
 # ----------------------------------------------------------------------
-# 2. LP COSTO MINIMO
+# 2. ESEMPIO SVOLTO A MANO: UN VEICOLO, DUE ORE
 # ----------------------------------------------------------------------
-intestazione("LP: costo energetico minimo")
-m, x, v_ene, v_rete = costruisci()
-m.setObjective(gp.quicksum(prezzo[t] * x[v, t] for v in veicoli for t in ore), GRB.MINIMIZE)
-m.optimize()
-assert m.Status == GRB.OPTIMAL
-prof_costo = profilo(x)
-costo_min = m.ObjVal
-picco_costo = (prof_costo + base).max()
-print(f"Costo di ricarica: {costo_min:.2f} €   picco di prelievo: {picco_costo:.1f} kW "
-      f"(limite {C_rete:.0f})")
-print("\nPrezzi ombra del fabbisogno (costo marginale di 1 kWh in più per veicolo):")
+intestazione("Esempio a mano: un veicolo, due ore (e = 10, prezzi 0,10 e 0,20, p_max = 12)")
+for g in (0.0, 0.01, 0.1):
+    me = gp.Model("esempio")
+    me.Params.OutputFlag = 0
+    x1 = me.addVar(ub=12, name="x1")
+    x2 = me.addVar(ub=12, name="x2")
+    ce = me.addConstr(x1 + x2 >= 10, name="energia")
+    me.setObjective(0.10 * x1 + 0.20 * x2 + g * (x2 - x1) * (x2 - x1), GRB.MINIMIZE)
+    me.optimize()
+    print(f"  gamma = {g:4.2f}: x1 = {x1.X:6.3f}  x2 = {x2.X:6.3f}  spesa = "
+          f"{0.10 * x1.X + 0.20 * x2.X:6.4f}  obiettivo = {me.ObjVal:6.4f}  Pi = {ce.Pi:.4f}")
+print(f"  formula: x1 = 5 + 1/(80 gamma); con gamma = 0,01: x1 = {5 + 1 / (80 * 0.01):.2f}")
+
+# ----------------------------------------------------------------------
+# 3. IL QP SUL CASO DI STUDIO
+# ----------------------------------------------------------------------
+intestazione("QP sul caso di studio: tre valori di gamma")
+GAMMA = [0.0, 0.001, 0.01]
+ris = {}
+for g in GAMMA:
+    m, x, v_ene = costruisci_qp(g)
+    m.optimize()
+    assert m.Status == GRB.OPTIMAL
+    spesa, z, salti, sq = leggi(x)
+    ris[g] = dict(obj=m.ObjVal, spesa=spesa, z=z, salti=salti, sq=sq,
+                  pi={v: v_ene[v].Pi for v in veicoli})
+    print(f"gamma = {g:5.3f}: obiettivo {m.ObjVal:7.2f} €  spesa {spesa:6.2f} €  "
+          f"picco {z.max():6.1f} kW  salto massimo {np.abs(salti).max():5.1f} kW  "
+          f"somma salti^2 {sq:8.1f}")
+print(f"\nCosto della regolarità (gamma = 0,01): "
+      f"{ris[0.01]['spesa'] - ris[0.0]['spesa']:.2f} € a notte")
+
+# ----------------------------------------------------------------------
+# 4. MOLTIPLICATORI DEL FABBISOGNO NEL QP
+# ----------------------------------------------------------------------
+intestazione("Moltiplicatori del fabbisogno (€/kWh)")
 for v in veicoli:
-    print(f"  {v}: {v_ene[v].Pi:.4f} €/kWh")
+    print(f"  {v}: gamma=0 {ris[0.0]['pi'][v]:.4f}   gamma=0,001 {ris[0.001]['pi'][v]:.4f}   "
+          f"gamma=0,01 {ris[0.01]['pi'][v]:.4f}")
+base_obj = ris[0.01]["obj"]
+for eps in (1.0, 0.01):
+    en = {v: flotta[v][2] for v in veicoli}
+    en["V1"] += eps
+    m2, _, _ = costruisci_qp(0.01, en)
+    m2.optimize()
+    print(f"Verifica (gamma = 0,01): e_1 + {eps:g} kWh -> obiettivo da {base_obj:.4f} a "
+          f"{m2.ObjVal:.4f} (rapporto incrementale {(m2.ObjVal - base_obj) / eps:.4f}; "
+          f"Pi = {ris[0.01]['pi']['V1']:.4f})")
 
 # ----------------------------------------------------------------------
-# 3. PEAK SHAVING (minimax) e PROFILO REGOLARE (QP)
+# 5. SENSITIVITÀ: FRONTIERA COSTO-NERVOSISMO
 # ----------------------------------------------------------------------
-intestazione("Peak shaving: minimizzare il picco di prelievo")
-mp, xp, _, _ = costruisci()
-z = mp.addVar(name="picco")
-mp.addConstrs((gp.quicksum(xp[v, t] for v in veicoli) + base[t] <= z for t in ore),
-              name="def_picco")
-mp.setObjective(z, GRB.MINIMIZE)
-mp.optimize()
-prof_picco = profilo(xp)
-costo_picco = sum(prezzo[t] * prof_picco[t] for t in ore)
-print(f"Picco minimo possibile: {mp.ObjVal:.1f} kW   costo: {costo_picco:.2f} € "
-      f"(+{costo_picco - costo_min:.2f} € rispetto al costo minimo)")
-
-intestazione("Compromesso: costo + rho · picco")
-compromessi = []
-for rho in [0, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0]:
-    mc, xc, _, _ = costruisci()
-    zc = mc.addVar(name="picco")
-    mc.addConstrs((gp.quicksum(xc[v, t] for v in veicoli) + base[t] <= zc for t in ore))
-    mc.setObjective(gp.quicksum(prezzo[t] * xc[v, t] for v in veicoli for t in ore)
-                    + rho * zc, GRB.MINIMIZE)
-    mc.optimize()
-    cc = sum(prezzo[t] * xc[v, t].X for v in veicoli for t in ore)
-    compromessi.append((rho, cc, zc.X))
-    print(f"  rho = {rho:4.2f}: costo {cc:6.2f} €, picco {zc.X:6.1f} kW")
-salva_dati(pd.DataFrame(compromessi, columns=["rho", "costo", "picco"]), "ev_compromessi")
+intestazione("Frontiera costo-nervosismo al variare di gamma")
+griglia = [0.0, 0.0005, 0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.5]
+front = []
+for g in griglia:
+    m, x, _ = costruisci_qp(g)
+    m.optimize()
+    spesa, z, salti, sq = leggi(x)
+    front.append((g, spesa, sq, float(np.abs(salti).max()), float(z.max())))
+    print(f"  gamma = {g:6.4f}: spesa {spesa:6.2f} €  somma salti^2 {sq:8.1f}  "
+          f"salto max {np.abs(salti).max():5.1f} kW  picco {z.max():6.1f} kW")
+front = pd.DataFrame(front, columns=["gamma", "spesa", "salti_quadrati", "salto_max", "picco"])
+salva_dati(front, "ev_frontiera_regolarita")
 
 # ----------------------------------------------------------------------
-# 4. SENSITIVITÀ: capacità del contatore
-# ----------------------------------------------------------------------
-intestazione("Sensitività: capacità della connessione alla rete")
-# attenzione: nel vincolo "somma x + base[t] <= C" Gurobi sposta la costante base[t]
-# nel termine noto; il RHS memorizzato è C - base[t], quindi va aggiornato così:
-for CC in [60, 65, 70, 80, 90, 120]:
-    ms, xs_, _, vr = costruisci()
-    for t in ore:
-        vr[t].RHS = CC - base[t]
-    ms.setObjective(gp.quicksum(prezzo[t] * xs_[v, t] for v in veicoli for t in ore),
-                    GRB.MINIMIZE)
-    ms.optimize()
-    esito = f"costo {ms.ObjVal:6.2f} €" if ms.Status == GRB.OPTIMAL else "INAMMISSIBILE"
-    print(f"  C_rete = {CC:3d} kW: {esito}")
-
-# ----------------------------------------------------------------------
-# 5. FIGURE (dati pgfplots + anteprima matplotlib)
+# 6. FIGURE (dati pgfplots + anteprima matplotlib)
 # ----------------------------------------------------------------------
 salva_dat(pd.DataFrame({"ora": ore, "prezzo_cent": prezzo * 100, "base": base,
-                        "totcosto": base + prof_costo, "totpicco": base + prof_picco}),
-          "cap10_profili")
-salva_dat(pd.DataFrame(compromessi, columns=["rho", "costo", "picco"]), "cap10_frontiera")
+                        "gzero": ris[0.0]["z"], "gpiccolo": ris[0.001]["z"],
+                        "ggrande": ris[0.01]["z"]}), "cap10_profili_qp")
+salva_dat(front[front["gamma"] > 0], "cap10_frontiera_qp")
 
-fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8.2, 6.4), sharex=True)
-ax1.bar(ore, prezzo * 100, color=GRIGIO, alpha=0.6)
-ax1.set_ylabel("prezzo (c€/kWh)")
-ax1.set_title("Prezzo orario dell'energia")
-ax2.plot(ore, base, color=GRIGIO, ls="--", label="carico di base")
-ax2.plot(ore, base + prof_costo, color=TEAL, lw=2, drawstyle="steps-mid",
-         label="costo minimo")
-ax2.plot(ore, base + prof_picco, color=ARANCIO, lw=2, drawstyle="steps-mid",
-         label="peak shaving")
-ax2.axhline(C_rete, color=ROSSO, ls=":", label=f"limite rete {C_rete:.0f} kW")
-ax2.set_xlabel("ora del giorno"); ax2.set_ylabel("prelievo totale (kW)")
-ax2.set_title("Profilo di prelievo: inseguire i prezzi crea un picco notturno")
-ax2.legend(fontsize=8, ncol=2)
-salva_figura(fig, "cap10_profili")
+fig, ax = plt.subplots(figsize=(8.2, 4.2))
+ax.plot(ore, base, color=GRIGIO, ls="--", label="carico di base")
+for g, c in zip(GAMMA, [TEAL, ARANCIO, VERDE]):
+    ax.plot(ore, ris[g]["z"], color=c, lw=2, drawstyle="steps-mid",
+            label=f"$\\gamma$ = {g} (spesa {ris[g]['spesa']:.2f} €)")
+ax.axhline(C_rete, color=ROSSO, ls=":", label=f"limite rete {C_rete:.0f} kW")
+ax.set_xlabel("ora del giorno"); ax.set_ylabel("prelievo totale (kW)")
+ax.set_title("Il termine quadratico addolcisce il profilo di prelievo")
+ax.legend(fontsize=8, ncol=2)
+salva_figura(fig, "cap10_profili_qp")
 
-comp = pd.DataFrame(compromessi, columns=["rho", "costo", "picco"])
+f2 = front[front["gamma"] > 0]
 fig, ax = plt.subplots()
-ax.plot(comp["picco"], comp["costo"], "-o", color=TEAL)
-for _, r in comp.iterrows():
-    ax.annotate(f"  $\\rho$={r['rho']:.2f}", (r["picco"], r["costo"]), fontsize=8)
-ax.set_xlabel("picco di prelievo (kW)")
-ax.set_ylabel("costo di ricarica (€)")
-ax.set_title("Frontiera costo-picco: ridurre il picco costa poco all'inizio")
-salva_figura(fig, "cap10_frontiera")
+ax.plot(f2["salti_quadrati"], f2["spesa"], "-o", color=TEAL)
+ax.axhline(ris[0.0]["spesa"], color=ARANCIO, ls="--", label="spesa del piano LP")
+ax.set_xscale("log")
+ax.set_xlabel("somma dei salti al quadrato (kW²)")
+ax.set_ylabel("spesa di ricarica (€)")
+ax.set_title("Frontiera costo-nervosismo")
+ax.legend()
+salva_figura(fig, "cap10_frontiera_qp")
 
 print("\nFatto: capitolo 10.")

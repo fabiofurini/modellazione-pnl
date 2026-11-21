@@ -33,13 +33,13 @@ PREPARAZIONE = f"""## Preparazione
 
 La cella qui sotto installa `gurobipy` e scarica `stile.py`, la palette comune
 degli script del corso. La licenza inclusa nel pacchetto pip è limitata a **2000
-variabili e 2000 vincoli**: tutti i modelli del laboratorio ci stanno — il più
-grande, il newsvendor a scenari, ne usa 1803 e 1801 — ma aumentando il numero di
-scenari si può superarla. In quel caso si attiva la licenza accademica gratuita
-da [portal.gurobi.com](https://portal.gurobi.com).
+variabili e 2000 vincoli**: tutti i modelli del corso ci stanno largamente — il
+più grande, la ricarica dei veicoli elettrici, ne usa 144 e 30. Per modelli più
+grandi si attiva la licenza accademica gratuita da
+[portal.gurobi.com](https://portal.gurobi.com).
 """
 
-CODICE_PREPARAZIONE = f'''# Ambiente: il solver e lo stile grafico del laboratorio.
+CODICE_PREPARAZIONE = f'''# Ambiente: il solver e lo stile grafico del corso.
 # In locale usa il python/stile.py del repository; su Colab installa e scarica quello che manca.
 import importlib.util
 import subprocess
@@ -71,7 +71,7 @@ codice [MIT](https://github.com/{REPO}/blob/main/LICENSE-CODE).
 """
 
 
-INDICE = """# I notebook del laboratorio
+INDICE = """# I notebook del corso
 
 Ogni capitolo con un modello ha il suo **notebook**: si apre in Google Colab con
 un clic sul badge, installa il solver da sé e gira nel browser — sul computer non
@@ -80,10 +80,9 @@ cella, con le figure che compaiono sotto le celle invece di finire in un file.
 
 !!! tip "La licenza del pacchetto pip basta"
     La licenza inclusa in `gurobipy` è limitata a 2000 variabili e 2000 vincoli, e
-    tutti i modelli del laboratorio ci stanno: il più grande — il newsvendor a
-    scenari — ne usa 1803 e 1801. Aumentando il numero di scenari si può superarla:
-    in quel caso si attiva la licenza accademica gratuita da
-    [portal.gurobi.com](https://portal.gurobi.com).
+    tutti i modelli del corso ci stanno largamente: il più grande — la ricarica dei
+    veicoli elettrici — ne usa 144 e 30. Per modelli più grandi si attiva la licenza
+    accademica gratuita da [portal.gurobi.com](https://portal.gurobi.com).
 
 | Capitolo | Classe | Notebook |
 |---|---|---|
@@ -135,7 +134,7 @@ print(gp.gurobi.version())        # es. (13, 0, 3)
 
 ```bash
 python3 -m pip install gurobipy matplotlib pandas scipy   # scipy: solo funzioni statistiche
-python3 python/run_all.py             # rigenera dati, risultati e figure
+python3 python/esegui_tutti.py        # rigenera dati, risultati e figure
 ```
 
 Nel [repository](https://github.com/fabiofurini/modellazione-pnl)

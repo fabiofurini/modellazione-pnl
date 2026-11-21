@@ -1,29 +1,29 @@
-"""Capitolo 4 — Produzione e scorte multiperiodali (LP / QP convesso).
+"""Capitolo 4 — Produzione con smoothing quadratico (QP convesso).
 
-Caso di studio: azienda che produce 3 componenti (prodotti 1, 2, 3) su un orizzonte
-di 6 mesi con una risorsa condivisa (ore macchina).
+Caso di studio: lo stesso del modello lineare di produzione e scorte
+(Modellazione PL): 3 componenti (prodotti 1, 2, 3), 6 mesi, una risorsa
+condivisa (ore macchina). Qui si aggiunge in obiettivo una penalità
+quadratica sulle variazioni della produzione totale da un mese all'altro.
 
 Contenuto:
-  1. LP a costo minimo con servizio obbligatorio
-  2. Prezzi ombra della capacità e analisi dei duali
-  3. Variante QP con piano di produzione regolare (smoothing)
-  4. Sensitività: costo ottimo al variare della capacità
+  1. Dati (gli stessi del caso lineare)
+  2. Esempio svolto a mano: un prodotto, due mesi
+  3. Il QP sul caso di studio per tre valori di gamma
+  4. Moltiplicatori della capacità nel QP e verifica per perturbazione
+  5. Sensitività: la frontiera costo-regolarità al variare di gamma
 """
 import gurobipy as gp
 import numpy as np
 import pandas as pd
 from gurobipy import GRB
 
-from stile import (ARANCIO, GRIGIO, TEAL, intestazione, plt, salva_dat, salva_dati,
-                   salva_figura)
+from stile import ARANCIO, TEAL, intestazione, plt, salva_dat, salva_dati, salva_figura
 
 # ----------------------------------------------------------------------
-# 1. DATI
+# 1. DATI (gli stessi del caso lineare)
 # ----------------------------------------------------------------------
 prodotti = ["1", "2", "3"]
 mesi = list(range(1, 7))
-
-# domanda (unità/mese): stagionalità crescente con picco nei mesi 4-5
 domanda = {
     ("1", 1): 110, ("1", 2): 130, ("1", 3): 150, ("1", 4): 190, ("1", 5): 210, ("1", 6): 160,
     ("2", 1): 70,  ("2", 2): 80,  ("2", 3): 110, ("2", 4): 140, ("2", 5): 150, ("2", 6): 100,
@@ -44,148 +44,146 @@ salva_dati(pd.DataFrame({"mese": mesi, "capacita_ore": [capacita[t] for t in mes
            "produzione_capacita")
 
 
-def costruisci_lp():
-    """LP base: minimo costo di produzione + giacenza, servizio obbligatorio."""
-    m = gp.Model("produzione_scorte")
+def costruisci_qp(gamma, cap=None):
+    """QP: costo di produzione + giacenza + gamma * somma dei salti al quadrato."""
+    cap = cap or capacita
+    m = gp.Model("produzione_smoothing")
     m.Params.OutputFlag = 0
     x = m.addVars(prodotti, mesi, name="x")           # quantità prodotta
     s = m.addVars(prodotti, mesi, name="s")           # scorta a fine mese
-    # bilancio delle scorte: s_{i,t-1} + x_it = d_it + s_it
     m.addConstrs(
         ((scorta_iniziale[i] if t == 1 else s[i, t - 1]) + x[i, t] == domanda[i, t] + s[i, t]
          for i in prodotti for t in mesi), name="bilancio")
-    # capacità della risorsa condivisa
     v_cap = m.addConstrs(
-        (gp.quicksum(ore_unit[i] * x[i, t] for i in prodotti) <= capacita[t]
-         for t in mesi), name="capacita")
-    m.setObjective(
-        gp.quicksum(costo_prod[i] * x[i, t] + costo_giac[i] * s[i, t]
-                    for i in prodotti for t in mesi), GRB.MINIMIZE)
+        (gp.quicksum(ore_unit[i] * x[i, t] for i in prodotti) <= cap[t] for t in mesi),
+        name="capacita")
+    tot = {t: gp.quicksum(x[i, t] for i in prodotti) for t in mesi}
+    costo = gp.quicksum(costo_prod[i] * x[i, t] + costo_giac[i] * s[i, t]
+                        for i in prodotti for t in mesi)
+    salti = gp.quicksum((tot[t] - tot[t - 1]) * (tot[t] - tot[t - 1]) for t in mesi[1:])
+    m.setObjective(costo + gamma * salti, GRB.MINIMIZE)
     return m, x, s, v_cap
 
 
-# ----------------------------------------------------------------------
-# 2. LP BASE: soluzione e duali
-# ----------------------------------------------------------------------
-intestazione("LP base: costo minimo con servizio obbligatorio")
-m, x, s, v_cap = costruisci_lp()
-m.optimize()
-assert m.Status == GRB.OPTIMAL
-print(f"Costo totale ottimo: {m.ObjVal:,.2f} €")
+def leggi(m, x, s):
+    """Costo lineare, profilo totale, salti e somma dei salti al quadrato."""
+    profilo = np.array([sum(x[i, t].X for i in prodotti) for t in mesi])
+    salti = np.diff(profilo)
+    costo = sum(costo_prod[i] * x[i, t].X + costo_giac[i] * s[i, t].X
+                for i in prodotti for t in mesi)
+    return costo, profilo, salti, float((salti ** 2).sum())
 
-piano = pd.DataFrame(
-    [(i, t, x[i, t].X, s[i, t].X) for i in prodotti for t in mesi],
-    columns=["prodotto", "mese", "produzione", "scorta"])
-salva_dati(piano, "produzione_piano_ottimo")
-print("\nPiano di produzione (unità/mese):")
-print(piano.pivot(index="prodotto", columns="mese", values="produzione").round(1))
-print("\nScorte a fine mese:")
-print(piano.pivot(index="prodotto", columns="mese", values="scorta").round(1))
 
-print("\nVincoli di capacità: utilizzo, prezzo ombra e range di validità")
-righe_duali = []
+# ----------------------------------------------------------------------
+# 2. ESEMPIO SVOLTO A MANO: UN PRODOTTO, DUE MESI
+# ----------------------------------------------------------------------
+intestazione("Esempio a mano: un prodotto, due mesi (d = 60, 100; c = 10, h = 1)")
+for g in (0.0, 0.004, 0.5):
+    me = gp.Model("esempio")
+    me.Params.OutputFlag = 0
+    x1, x2, s1 = me.addVar(name="x1"), me.addVar(name="x2"), me.addVar(name="s1")
+    b1 = me.addConstr(x1 == 60 + s1, name="bil1")
+    b2 = me.addConstr(s1 + x2 == 100, name="bil2")
+    me.setObjective(10 * x1 + 10 * x2 + s1 + g * (x2 - x1) * (x2 - x1), GRB.MINIMIZE)
+    me.optimize()
+    print(f"  gamma = {g:5.3f}: x1 = {x1.X:7.3f}  x2 = {x2.X:7.3f}  s1 = {s1.X:6.3f}  "
+          f"costo = {me.ObjVal:9.4f}  Pi = ({b1.Pi:.4f}, {b2.Pi:.4f})")
+print(f"  soglia: s1 > 0 solo se gamma > 1/160 = {1 / 160:.5f}; "
+      f"con gamma = 0,5: s1 = 20 - 1/(8 gamma) = {20 - 1 / (8 * 0.5):.2f}")
+
+# ----------------------------------------------------------------------
+# 3. IL QP SUL CASO DI STUDIO
+# ----------------------------------------------------------------------
+intestazione("QP sul caso di studio: tre valori di gamma")
+GAMMA = [0.0, 0.5, 2.0]
+risultati = {}
+for g in GAMMA:
+    m, x, s, v_cap = costruisci_qp(g)
+    m.optimize()
+    assert m.Status == GRB.OPTIMAL
+    costo, profilo, salti, sq = leggi(m, x, s)
+    risultati[g] = dict(obj=m.ObjVal, costo=costo, profilo=profilo, salti=salti, sq=sq,
+                        piano={(i, t): x[i, t].X for i in prodotti for t in mesi},
+                        scorte={(i, t): s[i, t].X for i in prodotti for t in mesi},
+                        pi=[v_cap[t].Pi for t in mesi])
+    print(f"gamma = {g:3.1f}: obiettivo {m.ObjVal:10.2f} €  costo lineare {costo:10.2f} €  "
+          f"salto massimo {np.abs(salti).max():6.1f}  somma salti^2 {sq:9.1f}")
+    print("   produzione totale: " + "  ".join(f"{v:6.1f}" for v in profilo))
+
+r5 = risultati[0.5]
+print(f"\nCosto della regolarità (gamma = 0,5): {r5['costo'] - risultati[0.0]['costo']:.2f} € "
+      f"(+{100 * (r5['costo'] / risultati[0.0]['costo'] - 1):.2f}%)")
+print("\nPiano con gamma = 0,5 (unità/mese):")
+piano5 = pd.DataFrame([(i, t, r5["piano"][i, t], r5["scorte"][i, t]) for i in prodotti for t in mesi],
+                      columns=["prodotto", "mese", "produzione", "scorta"])
+print(piano5.pivot(index="prodotto", columns="mese", values="produzione").round(1))
+print("Scorte a fine mese:")
+print(piano5.pivot(index="prodotto", columns="mese", values="scorta").round(1))
+salva_dati(piano5, "produzione_piano_regolare")
+
+# ----------------------------------------------------------------------
+# 4. MOLTIPLICATORI DELLA CAPACITÀ NEL QP
+# ----------------------------------------------------------------------
+intestazione("Moltiplicatori della capacità (gamma = 0 e gamma = 0,5)")
 for t in mesi:
-    uso = sum(ore_unit[i] * x[i, t].X for i in prodotti)
-    c = v_cap[t]
-    righe_duali.append((t, uso, capacita[t], c.Pi, c.SARHSLow, c.SARHSUp))
-    print(f"  mese {t}: uso {uso:6.1f}/{capacita[t]} ore | "
-          f"prezzo ombra {c.Pi:6.3f} €/ora | valido per b_t in [{c.SARHSLow:6.1f}, {c.SARHSUp:6.1f}]")
-duali = pd.DataFrame(righe_duali, columns=["mese", "ore_usate", "capacita", "prezzo_ombra",
-                                           "rhs_min", "rhs_max"])
-salva_dati(duali, "produzione_duali_capacita")
-
-# verifica del prezzo ombra per perturbazione (mese col duale più negativo:
-# nella convenzione Gurobi, per un vincolo <= in un problema di minimo Pi <= 0)
-t_star = duali.loc[duali["prezzo_ombra"].idxmin(), "mese"]
-pi_star = duali["prezzo_ombra"].min()
-m2, x2, s2, v2 = costruisci_lp()
-v2[t_star].RHS = capacita[t_star] + 1
-m2.optimize()
-print(f"\nVerifica: +1 ora nel mese {t_star} → costo passa da {m.ObjVal:.2f} a {m2.ObjVal:.2f} "
-      f"(variazione {m2.ObjVal - m.ObjVal:+.3f} = prezzo ombra {pi_star:.3f})")
+    print(f"  mese {t}: Pi(gamma=0) = {risultati[0.0]['pi'][t - 1]:7.3f}   "
+          f"Pi(gamma=0,5) = {r5['pi'][t - 1]:7.3f} €/ora")
+t_star = int(np.argmin(r5["pi"])) + 1
+for eps in (1.0, 0.01):
+    cap2 = dict(capacita)
+    cap2[t_star] += eps
+    m2, x2_, s2_, _ = costruisci_qp(0.5, cap2)
+    m2.optimize()
+    print(f"Verifica: +{eps:g} ore nel mese {t_star} -> obiettivo da {r5['obj']:.3f} a {m2.ObjVal:.3f} "
+          f"(rapporto incrementale {(m2.ObjVal - r5['obj']) / eps:+.3f}; Pi = {r5['pi'][t_star - 1]:.3f})")
 
 # ----------------------------------------------------------------------
-# 3. VARIANTE QP: piano regolare (smoothing della produzione totale)
+# 5. SENSITIVITÀ: FRONTIERA COSTO-REGOLARITÀ
 # ----------------------------------------------------------------------
-intestazione("Variante QP: piano regolare (penalità sulle variazioni)")
-risultati_qp = {}
-for gamma in [0.0, 0.5, 2.0]:
-    mq, xq, sq, _ = costruisci_lp()
-    mq.update()                       # necessario prima di getObjective()
-    tot = {t: gp.quicksum(xq[i, t] for i in prodotti) for t in mesi}
-    obj = mq.getObjective()
-    mq.setObjective(obj + gamma * gp.quicksum((tot[t] - tot[t - 1]) * (tot[t] - tot[t - 1])
-                                              for t in mesi[1:]), GRB.MINIMIZE)
-    mq.optimize()
-    profilo = [sum(xq[i, t].X for i in prodotti) for t in mesi]
-    risultati_qp[gamma] = (mq.ObjVal, profilo)
-    var_max = max(abs(profilo[k] - profilo[k - 1]) for k in range(1, len(profilo)))
-    print(f"  gamma={gamma:4.1f}: costo {mq.ObjVal:10.2f} €, variazione mensile max {var_max:6.1f} unità")
+intestazione("Frontiera costo-regolarità al variare di gamma")
+griglia = [0.0, 0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0]
+frontiera = []
+for g in griglia:
+    m, x, s, _ = costruisci_qp(g)
+    m.optimize()
+    costo, profilo, salti, sq = leggi(m, x, s)
+    frontiera.append((g, costo, sq, float(np.abs(salti).max())))
+    print(f"  gamma = {g:6.3f}: costo {costo:10.2f} €  somma salti^2 {sq:9.1f}  "
+          f"salto massimo {np.abs(salti).max():6.1f}")
+front = pd.DataFrame(frontiera, columns=["gamma", "costo", "salti_quadrati", "salto_max"])
+salva_dati(front, "produzione_frontiera_regolarita")
 
 # ----------------------------------------------------------------------
-# 4. FIGURE (dati per pgfplots + anteprima matplotlib)
+# 6. FIGURE (dati per pgfplots + anteprima matplotlib)
 # ----------------------------------------------------------------------
 salva_dat(pd.DataFrame({
     "mese": mesi,
-    **{f"x{i}": [x[i, t].X for t in mesi] for i in prodotti},
-    **{f"s{i}": [s[i, t].X for t in mesi] for i in prodotti},
+    "gzero": risultati[0.0]["profilo"], "gmezzo": risultati[0.5]["profilo"],
+    "gdue": risultati[2.0]["profilo"],
     "domtot": [sum(domanda[i, t] for i in prodotti) for t in mesi],
-}), "cap04_piano")
-salva_dat(pd.DataFrame({
-    "mese": mesi,
-    "gzero": risultati_qp[0.0][1],
-    "gmezzo": risultati_qp[0.5][1],
-    "gdue": risultati_qp[2.0][1],
 }), "cap04_smoothing")
-
-fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(10.5, 4.0))
-larg = 0.26
-for k, i in enumerate(prodotti):
-    prod = [x[i, t].X for t in mesi]
-    ax1.bar([t + (k - 1) * larg for t in mesi], prod, width=larg, label=f"prodotto {i}")
-ax1.plot(mesi, [sum(domanda[i, t] for i in prodotti) for t in mesi], "o--",
-         color=GRIGIO, label="domanda totale")
-ax1.set_xlabel("mese"); ax1.set_ylabel("unità")
-ax1.set_title("Piano di produzione ottimo (LP)")
-ax1.legend(fontsize=8)
-for i in prodotti:
-    ax2.plot(mesi, [s[i, t].X for i2, t in [(i, t) for t in mesi]], marker="o", label=f"prodotto {i}")
-ax2.set_xlabel("mese"); ax2.set_ylabel("unità a scorta")
-ax2.set_title("Scorte di fine mese")
-ax2.legend(fontsize=8)
-salva_figura(fig, "cap04_piano_scorte")
+salva_dat(front[front["gamma"] > 0], "cap04_frontiera")
 
 fig, ax = plt.subplots()
-for gamma, stile_linea in zip([0.0, 0.5, 2.0], ["-o", "-s", "-^"]):
-    ax.plot(mesi, risultati_qp[gamma][1], stile_linea,
-            label=f"$\\gamma$ = {gamma} (costo {risultati_qp[gamma][0]:,.0f} €)")
+for g, st in zip(GAMMA, ["-o", "-s", "-^"]):
+    ax.plot(mesi, risultati[g]["profilo"], st,
+            label=f"$\\gamma$ = {g} (costo {risultati[g]['costo']:,.0f} €)")
+ax.plot(mesi, [sum(domanda[i, t] for i in prodotti) for t in mesi], "--", color="gray",
+        label="domanda totale")
 ax.set_xlabel("mese"); ax.set_ylabel("produzione totale (unità)")
 ax.set_title("Effetto dello smoothing quadratico sul profilo produttivo")
-ax.legend()
+ax.legend(fontsize=8)
 salva_figura(fig, "cap04_smoothing")
 
-# sensitività: costo ottimo al variare della capacità uniforme
-intestazione("Sensitività: costo ottimo al variare della capacità")
-fattori = np.linspace(0.85, 1.25, 17)
-costi = []
-for f in fattori:
-    ms, xs_, ss_, vs = costruisci_lp()
-    for t in mesi:
-        vs[t].RHS = capacita[t] * f
-    ms.optimize()
-    costi.append(ms.ObjVal if ms.Status == GRB.OPTIMAL else np.nan)
-    print(f"  capacità x{f:4.2f}: costo {costi[-1]:10.2f} €")
-
-tab_cap = pd.DataFrame({"percento": fattori * 100, "costo": costi}).dropna()
-salva_dat(tab_cap, "cap04_capacita")
-
 fig, ax = plt.subplots()
-ax.plot(fattori * 100, costi, "-o", color=TEAL)
-ax.axvline(100, color=ARANCIO, linestyle="--", label="capacità attuale")
-ax.set_xlabel("capacità disponibile (% dell'attuale)")
-ax.set_ylabel("costo totale ottimo (€)")
-ax.set_title("Curva valore della capacità: convessa e decrescente")
+f2 = front[front["gamma"] > 0]
+ax.plot(f2["salti_quadrati"], f2["costo"], "-o", color=TEAL)
+ax.axhline(risultati[0.0]["costo"], color=ARANCIO, ls="--", label="costo del piano LP")
+ax.set_xscale("symlog", linthresh=10)
+ax.set_xlabel("somma dei salti al quadrato")
+ax.set_ylabel("costo di produzione e giacenza (€)")
+ax.set_title("Frontiera costo-regolarità")
 ax.legend()
-salva_figura(fig, "cap04_valore_capacita")
+salva_figura(fig, "cap04_frontiera")
 
 print("\nFatto: capitolo 4.")
