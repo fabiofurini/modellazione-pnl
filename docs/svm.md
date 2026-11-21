@@ -1,6 +1,6 @@
 # Support Vector Machine: ottimizzazione per il machine learning
 
-[:material-file-pdf-box: Dispensa (PDF)](pdf/dispensa-modellazione-pnl.pdf) · [:material-presentation: Slide del capitolo (PDF)](pdf/slide-12-svm.pdf)
+[:material-file-pdf-box: Dispensa (PDF)](pdf/dispensa-modellazione-pnl.pdf) · [:material-presentation: Slide del capitolo (PDF)](pdf/slide-12-svm.pdf) · [:material-gesture-tap: App: SVM: margine e vettori di supporto](laboratorio/svm-margine.md)
 
 **Classe:** QP convesso · **Script:** `python/lab12_svm.py`
 

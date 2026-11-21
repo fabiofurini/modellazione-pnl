@@ -36,3 +36,6 @@ __pycache__/
 
 # i PDF pubblicati sul sito vanno invece versionati
 !docs/pdf/*.pdf
+# strumenti privati del laboratorio interattivo
+python/genera_laboratorio.py
+python/test_laboratorio.py

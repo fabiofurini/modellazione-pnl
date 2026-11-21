@@ -30,6 +30,7 @@ online, con codice Python/Gurobi e casi di studio riproducibili.
 Prerequisiti: [Modellazione PL](https://fabiofurini.github.io/modellazione-pl/) e [Ottimizzazione convessa](https://fabiofurini.github.io/ottimizzazione-convessa/).
 
 [Comincia :material-arrow-right:](strumenti.md){ .md-button .md-button--primary }
+[:material-gesture-tap: Laboratorio](laboratorio/index.md){ .md-button }
 [:material-clipboard-check-outline: Quiz](autovalutazione.md){ .md-button }
 [:material-download: Materiale](materiale.md){ .md-button }
 
@@ -38,13 +39,11 @@ Prerequisiti: [Modellazione PL](https://fabiofurini.github.io/modellazione-pl/) 
 <!-- collana-app -->
 ## Provalo subito
 
-La frontiera efficiente di Markowitz: ogni punto è un portafoglio ottimo per un livello di rischio. Apri il notebook in Colab, cambia i dati e rifai il calcolo con Gurobi, senza installare niente.
+Tre modelli non lineari del corso risolti all'ottimo nel browser: portafoglio di Markowitz, prezzo ottimo con capienza e localizzazione di un servizio. Scegli il modello in alto a destra, cambia il rendimento richiesto o gli altri dati con i cursori e guarda la soluzione ottima ricalcolata, con la sua posizione sulla frontiera efficiente.
 
-[![](img/cap06_frontiera.png)](markowitz.md)
+<div class="gi" data-grafico="pnl-modelli"></div>
 
-[:simple-googlecolab: Apri il notebook in Colab](https://colab.research.google.com/github/fabiofurini/modellazione-pnl/blob/main/notebooks/lab06_markowitz.ipynb){ .md-button .md-button--primary }
-[:material-book-open-variant: Il capitolo](markowitz.md){ .md-button }
-[:material-language-python: Tutti i notebook](notebook.md){ .md-button }
+[:material-gesture-tap: Altre app nel laboratorio](laboratorio/index.md){ .md-button }
 <!-- /collana-app -->
 
 ## Le parti del corso
@@ -92,6 +91,14 @@ La frontiera efficiente di Markowitz: ogni punto è un portafoglio ottimo per un
     Un facsimile d'esame nuovo a ogni avvio: 13 domande, 33 punti, con la soluzione e il link alle dispense. In Materiale c'è anche la banca completa delle domande.
 
     [:octicons-arrow-right-24: Mettiti alla prova](autovalutazione.md)
+
+-   :material-gesture-tap: **Laboratorio interattivo**
+
+    ---
+
+    App che girano nel browser: muovi i parametri e guarda le idee del corso lavorare, un passo alla volta.
+
+    [:octicons-arrow-right-24: Il laboratorio](laboratorio/index.md)
 
 -   :material-download: **Dispense in PDF**
 

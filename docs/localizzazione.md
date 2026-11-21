@@ -1,6 +1,6 @@
 # Localizzazione continua di un servizio
 
-[:material-file-pdf-box: Dispensa (PDF)](pdf/dispensa-modellazione-pnl.pdf) · [:material-presentation: Slide del capitolo (PDF)](pdf/slide-09-localizzazione.pdf)
+[:material-file-pdf-box: Dispensa (PDF)](pdf/dispensa-modellazione-pnl.pdf) · [:material-presentation: Slide del capitolo (PDF)](pdf/slide-09-localizzazione.pdf) · [:material-gesture-tap: App: Localizzazione: efficienza contro equità](laboratorio/localizzazione.md)
 
 **Classe:** NLP convesso · **Script:** `python/lab09_localizzazione.py`
 

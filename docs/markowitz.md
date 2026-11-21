@@ -1,6 +1,6 @@
 # Portafoglio di Markowitz
 
-[:material-file-pdf-box: Dispensa (PDF)](pdf/dispensa-modellazione-pnl.pdf) · [:material-presentation: Slide del capitolo (PDF)](pdf/slide-06-markowitz.pdf)
+[:material-file-pdf-box: Dispensa (PDF)](pdf/dispensa-modellazione-pnl.pdf) · [:material-presentation: Slide del capitolo (PDF)](pdf/slide-06-markowitz.pdf) · [:material-gesture-tap: App: Markowitz: portafoglio ottimo e frontiera](laboratorio/frontiera-markowitz.md)
 
 **Classe:** QP convesso · **Script:** `python/lab06_markowitz.py`
 

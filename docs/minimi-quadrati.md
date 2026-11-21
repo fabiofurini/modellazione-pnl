@@ -1,6 +1,6 @@
 # Regressione ai minimi quadrati
 
-[:material-file-pdf-box: Dispensa (PDF)](pdf/dispensa-modellazione-pnl.pdf) · [:material-presentation: Slide del capitolo (PDF)](pdf/slide-13-minimi-quadrati.pdf) · [:material-pencil: Esercizi](#esercizi)
+[:material-file-pdf-box: Dispensa (PDF)](pdf/dispensa-modellazione-pnl.pdf) · [:material-presentation: Slide del capitolo (PDF)](pdf/slide-13-minimi-quadrati.pdf) · [:material-pencil: Esercizi](#esercizi) · [:material-gesture-tap: App: Minimi quadrati contro scarti assoluti](laboratorio/minimi-quadrati-lp.md)
 
 **Classe:** QP convesso · **Script:** `python/lab13_minimi_quadrati.py`
 

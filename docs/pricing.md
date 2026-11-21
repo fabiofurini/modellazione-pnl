@@ -1,6 +1,6 @@
 # Pricing e revenue management
 
-[:material-file-pdf-box: Dispensa (PDF)](pdf/dispensa-modellazione-pnl.pdf) · [:material-presentation: Slide del capitolo (PDF)](pdf/slide-07-pricing.pdf)
+[:material-file-pdf-box: Dispensa (PDF)](pdf/dispensa-modellazione-pnl.pdf) · [:material-presentation: Slide del capitolo (PDF)](pdf/slide-07-pricing.pdf) · [:material-gesture-tap: App: Prezzo ottimo con capienza](laboratorio/prezzo-ottimo.md)
 
 **Classe:** NLP concavo / non convesso · **Script:** `python/lab07_pricing.py`
 
