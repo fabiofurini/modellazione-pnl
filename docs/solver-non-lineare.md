@@ -21,7 +21,7 @@
     - stimare un prezzo ombra per perturbazione quando il solver non dà i duali.
 
 I comandi generali di `gurobipy` (costruire, far girare, leggere la soluzione) sono in
-[Modellazione PL, «Implementazione: modelli lineari»](https://fabiofurini.github.io/modellazione-pl/solver-lp/)
+[Modellazione PL, «Il solver: costruire, risolvere, interpretare»](https://fabiofurini.github.io/modellazione-pl/solver-lp/)
 e nella [guida al solver](https://github.com/fabiofurini/modellazione-pl/blob/main/GUIDA_GUROBI.md).
 Qui solo ciò che è proprio dei modelli non lineari.
 

@@ -8,7 +8,7 @@
 
 !!! nota "Prerequisiti"
 
-    - Dal modulo *Modellazione PL*, [Capitolo 10 «Regressione robusta e quantile: stimare i parametri con un LP»](https://fabiofurini.github.io/modellazione-pl/regressione/): la regressione con scarti assoluti e quantili come LP, sugli stessi dati.
+    - Dal modulo *Modellazione PL*, [Capitolo 11 «Regressione robusta e quantile: stimare i parametri con un LP»](https://fabiofurini.github.io/modellazione-pl/regressione/): la regressione con scarti assoluti e quantili come LP, sugli stessi dati.
 
     - Da questo modulo, [Capitolo 2 «Richiami: convessità, programmazione quadratica e condizioni KKT»](https://fabiofurini.github.io/modellazione-pnl/teoria-non-lineare/): i programmi quadratici convessi, le condizioni KKT e i moltiplicatori come prezzi ombra.
 

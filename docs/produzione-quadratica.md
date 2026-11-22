@@ -8,7 +8,7 @@
 
 !!! nota "Prerequisiti"
 
-    - Dal modulo *Modellazione PL*, [Capitolo 4 «Produzione e scorte multiperiodali»](https://fabiofurini.github.io/modellazione-pl/produzione/): il modello lineare di produzione e scorte, con i suoi dati.
+    - Dal modulo *Modellazione PL*, [Capitolo 5 «Produzione e scorte multiperiodali»](https://fabiofurini.github.io/modellazione-pl/produzione/): il modello lineare di produzione e scorte, con i suoi dati.
 
     - Da questo modulo, [Capitolo 2 «Richiami: convessità, programmazione quadratica e condizioni KKT»](https://fabiofurini.github.io/modellazione-pnl/teoria-non-lineare/): i programmi quadratici convessi, le condizioni KKT e i moltiplicatori come prezzi ombra.
 
