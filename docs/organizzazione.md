@@ -44,7 +44,7 @@ Non serve installare niente: ogni capitolo ha il suo
 
 ```bash
 python3 -m pip install gurobipy matplotlib pandas
-python3 python/esegui_tutti.py       # rigenera risultati, figure e notebook
+python3 python/lab06_markowitz.py    # ogni script si esegue da solo
 ```
 
 Le soluzioni degli esercizi vengono distribuite a lezione.

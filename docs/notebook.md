@@ -26,15 +26,9 @@ cella, con le figure che compaiono sotto le celle invece di finire in un file.
 
 ## Come sono fatti
 
-I notebook non si scrivono a mano: si generano dagli script con
-
-```bash
-python3 python/genera_notebook.py
-```
-
-Lo script del capitolo resta l'unica sorgente del codice — il notebook ne riprende
-docstring, sezioni e commenti — e chi preferisce la riga di comando continua a
-lanciare, dalla cartella `python/`:
+Ogni notebook contiene lo stesso codice dello script del capitolo, con le stesse
+sezioni e gli stessi commenti. Chi preferisce la riga di comando lancia lo script,
+che si esegue da solo, dalla cartella `python/`:
 
 ```bash
 python3 lab06_markowitz.py
@@ -66,11 +60,11 @@ import gurobipy as gp
 print(gp.gurobi.version())        # es. (13, 0, 3)
 ```
 
-## Rigenerare tutto
+## Eseguire gli script in locale
 
 ```bash
 python3 -m pip install gurobipy matplotlib pandas scipy   # scipy: solo funzioni statistiche
-python3 python/esegui_tutti.py        # rigenera dati, risultati e figure
+python3 python/lab06_markowitz.py   # ogni script si esegue da solo
 ```
 
 Nel [repository](https://github.com/fabiofurini/modellazione-pnl)

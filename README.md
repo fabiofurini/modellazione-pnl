@@ -64,12 +64,12 @@ Ogni capitolo ha il suo script in [`python/`](python/) (`lab04`–`lab13`):
 
 ```bash
 python3 -m pip install gurobipy matplotlib pandas
-python3 python/esegui_tutti.py     # tutti i modelli: risultati, figure e notebook
+python3 python/lab06_markowitz.py   # ogni script si esegue da solo
 ```
 
 Senza installare niente, ogni capitolo ha il suo notebook in [`notebooks/`](notebooks/): si apre in
-Colab dal badge in cima alla pagina del capitolo e gira nel browser. I notebook si generano dagli
-script (`python3 python/genera_notebook.py`), quindi il codice del corso resta uno solo. I dati dei
+Colab dal badge in cima alla pagina del capitolo e gira nel browser; contiene lo stesso codice dello
+script. I dati dei
 casi presi da Modellazione PL (produzione, ricarica EV, panetteria) stanno nel repository di
 [Modellazione PL](https://github.com/fabiofurini/modellazione-pl): gli script qui li riscrivono con
 gli stessi valori.
