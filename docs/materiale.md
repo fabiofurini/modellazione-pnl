@@ -6,7 +6,7 @@ Testi, figure e dati sono sotto licenza
 Python sotto licenza
 [MIT](https://github.com/fabiofurini/modellazione-pnl/blob/main/LICENSE-CODE).
 
-## La dispensa
+## Dispense
 
 <div class="grid cards" markdown>
 
@@ -20,6 +20,41 @@ Python sotto licenza
 
     [:octicons-download-24: dispensa-modellazione-pnl.pdf](pdf/dispensa-modellazione-pnl.pdf)
 
+</div>
+
+<!-- slide:inizio -->
+## Slide
+
+Le slide delle lezioni, una per capitolo delle dispense (PDF).
+
+### Strumenti
+
+- :material-presentation: [Introduzione al corso](pdf/slide-01-introduzione.pdf)
+- :material-presentation: [Richiami: convessità, QP e KKT](pdf/slide-02-richiami.pdf)
+- :material-presentation: [Il solver per i modelli non lineari](pdf/slide-03-python-gurobi.pdf)
+
+### Modelli deterministici
+
+- :material-presentation: [Produzione con smoothing quadratico](pdf/slide-04-produzione-quadratica.pdf)
+- :material-presentation: [Supply chain con congestione e sostenibilità](pdf/slide-05-supply-chain.pdf)
+- :material-presentation: [Portafoglio di Markowitz](pdf/slide-06-markowitz.pdf)
+- :material-presentation: [Pricing e revenue management](pdf/slide-07-pricing.pdf)
+- :material-presentation: [Allocazione del budget pubblicitario](pdf/slide-08-budget.pdf)
+- :material-presentation: [Localizzazione continua di un servizio](pdf/slide-09-localizzazione.pdf)
+- :material-presentation: [Ricarica EV con profilo regolare](pdf/slide-10-ricarica-ev-quadratica.pdf)
+- :material-presentation: [Capacità di servizio e tempi di attesa](pdf/slide-11-code.pdf)
+
+### Ottimizzazione e machine learning
+
+- :material-presentation: [Support Vector Machine](pdf/slide-12-svm.pdf)
+- :material-presentation: [Regressione ai minimi quadrati](pdf/slide-13-minimi-quadrati.pdf)
+
+<!-- slide:fine -->
+
+## Altri documenti
+
+<div class="grid cards" markdown>
+
 -   :material-language-python: **Il codice**
 
     ---
@@ -31,47 +66,8 @@ Python sotto licenza
 
 </div>
 
-<!-- slide:inizio -->
-## Le slide
-
-Le slide delle lezioni, una per capitolo delle dispense (PDF).
-
-<div class="grid cards" markdown>
-
--   :material-presentation: **Strumenti**
-
-    ---
-
-    - [Introduzione al corso](pdf/slide-01-introduzione.pdf)
-    - [Richiami: convessità, QP e KKT](pdf/slide-02-richiami.pdf)
-    - [Il solver per i modelli non lineari](pdf/slide-03-python-gurobi.pdf)
-
--   :material-presentation: **Modelli deterministici**
-
-    ---
-
-    - [Produzione con smoothing quadratico](pdf/slide-04-produzione-quadratica.pdf)
-    - [Supply chain con congestione e sostenibilità](pdf/slide-05-supply-chain.pdf)
-    - [Portafoglio di Markowitz](pdf/slide-06-markowitz.pdf)
-    - [Pricing e revenue management](pdf/slide-07-pricing.pdf)
-    - [Allocazione del budget pubblicitario](pdf/slide-08-budget.pdf)
-    - [Localizzazione continua di un servizio](pdf/slide-09-localizzazione.pdf)
-    - [Ricarica EV con profilo regolare](pdf/slide-10-ricarica-ev-quadratica.pdf)
-    - [Capacità di servizio e tempi di attesa](pdf/slide-11-code.pdf)
-
--   :material-presentation: **Ottimizzazione e machine learning**
-
-    ---
-
-    - [Support Vector Machine](pdf/slide-12-svm.pdf)
-    - [Regressione ai minimi quadrati](pdf/slide-13-minimi-quadrati.pdf)
-
-</div>
-
-<!-- slide:fine -->
-
 <!-- banca-domande -->
-## Banca delle domande del quiz
+## Banca delle domande
 
 Tutte le domande dell'autovalutazione, divise per parte e capitolo, con la risposta corretta e la spiegazione; per le domande generate, che cambiano i numeri a ogni avvio, alcuni esempi.
 
