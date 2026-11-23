@@ -24,8 +24,10 @@ corso di [Ottimizzazione convessa](https://fabiofurini.github.io/ottimizzazione-
 Materiale didattico ideato e sviluppato da **[Fabio Furini](https://fabiofurini.github.io/)**, professore
 associato al [DIAG](https://www.diag.uniroma1.it/), Sapienza Università di Roma.
 
-**Modelli di programmazione non lineare** — la dispensa del corso in versione
-online, con codice Python/Gurobi e casi di studio riproducibili.
+Il corso presenta la modellazione con la programmazione non lineare: richiami di teoria, i solver per i
+modelli non lineari, e i modelli di produzione con smoothing quadratico, supply chain e CO2, portafoglio
+di Markowitz, pricing, budget pubblicitario, localizzazione continua, code, support vector machine e
+minimi quadrati, con il codice Python/Gurobi.
 
 Prerequisiti: [Modellazione PL](https://fabiofurini.github.io/modellazione-pl/) e [Ottimizzazione convessa](https://fabiofurini.github.io/ottimizzazione-convessa/).
 
