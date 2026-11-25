@@ -42,9 +42,9 @@ Prerequisiti: [Modellazione PL](https://fabiofurini.github.io/modellazione-pl/) 
 <!-- collana-app -->
 ## Provalo subito
 
-Tre modelli non lineari del corso risolti all'ottimo nel browser: portafoglio di Markowitz, prezzo ottimo con capienza e localizzazione di un servizio. Scegli il modello in alto a destra, cambia il rendimento richiesto o gli altri dati con i cursori e guarda la soluzione ottima ricalcolata, con la sua posizione sulla frontiera efficiente.
+Il portafoglio di Markowitz a varianza minima, risolto all'ottimo nel browser: muovi il rendimento richiesto, il limite per titolo e il rendimento atteso di un titolo e guarda il portafoglio ottimo scorrere sulla frontiera efficiente.
 
-<div class="gi" data-grafico="pnl-modelli"></div>
+<div class="gi" data-grafico="pnl-markowitz"></div>
 
 [:material-gesture-tap: Altre app nel laboratorio](laboratorio/index.md){ .md-button }
 <!-- /collana-app -->
