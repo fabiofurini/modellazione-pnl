@@ -42,7 +42,7 @@ Prerequisiti: [Modellazione PL](https://fabiofurini.github.io/modellazione-pl/) 
 <!-- collana-app -->
 ## Provalo subito
 
-Il portafoglio di Markowitz a varianza minima, risolto all'ottimo nel browser: muovi il rendimento richiesto, il limite per titolo e il rendimento atteso di un titolo e guarda il portafoglio ottimo scorrere sulla frontiera efficiente.
+L'app risolve all'ottimo nel browser un modello di programmazione non lineare: i dati, il modello simbolico, il modello numerico dell'istanza e la soluzione ottima con il suo grafico. Con i cursori si cambiano i dati e la soluzione si ricalcola.
 
 <div class="gi" data-grafico="pnl-markowitz"></div>
 
