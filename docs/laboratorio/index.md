@@ -9,20 +9,6 @@ I modelli del corso risolti all'ottimo nel browser: cambia i dati con i cursori 
 e un risolutore scritto in JavaScript ricalcola la soluzione, con gli stessi numeri degli script Python
 e delle dispense. Scegli un'app: si apre a tutta pagina.
 
-## Modelli a confronto
-
-<div class="grid cards" markdown>
-
--   :material-chart-bell-curve-cumulative: **Tre modelli non lineari risolti all'ottimo**
-
-    ---
-
-    Portafoglio di Markowitz, prezzo ottimo di un biglietto e localizzazione di un servizio: scegli il modello, cambia i dati con i cursori e il risolutore, nel browser, ricalcola la soluzione ottima.
-
-    [Apri l'app →](tre-modelli-pnl.md)
-
-</div>
-
 ## Modelli deterministici
 
 <div class="grid cards" markdown>
@@ -31,7 +17,7 @@ e delle dispense. Scegli un'app: si apre a tutta pagina.
 
     ---
 
-    Il QP a minima varianza con un rendimento obiettivo: muovi il rendimento richiesto, il limite per titolo e il rendimento atteso di un titolo, e guarda il portafoglio ottimo scorrere sulla frontiera efficiente.
+    Il QP a minima varianza con un rendimento richiesto: muovi il rendimento richiesto e il limite per titolo e guarda il portafoglio ottimo scorrere sulla frontiera efficiente.
 
     [Apri l'app →](frontiera-markowitz.md)
 
