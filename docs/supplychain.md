@@ -145,7 +145,7 @@ strettamente convesso, si sposterebbe invece con continuità.
 
 !!! warning "Minimax degenere"
     Il minimax "puro" ($\min z$) accetta qualunque instradamento con utilizzo
-    $\le \tilde z$, anche costosissimo: combinare sempre con il costo.
+    $\le z(\text{NLP})$, anche costosissimo: combinare sempre con il costo.
 
 
 ## In sintesi

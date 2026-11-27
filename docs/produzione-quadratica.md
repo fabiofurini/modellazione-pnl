@@ -67,7 +67,7 @@ convesso e i vincoli sono lineari. Con $\gamma = 0$ si ritrova il modello linear
 !!! example "Esempio a mano (1 prodotto, 2 mesi)"
     $d = (60, 100)$, $c = 10$, $h = 1$, capacità abbondante; il modello lineare
     produce su domanda, costo $1600$. Con $\gamma = 0{,}5$ il solver dà
-    $\tilde x = (79{,}75;\ 80{,}25)$, $\tilde s_1 = 19{,}75$, $\tilde z = 1619{,}875$ e
+    $\tilde x = (79{,}75;\ 80{,}25)$, $\tilde s_1 = 19{,}75$, $z(\text{NLP}) = 1619{,}875$ e
     moltiplicatori dei bilanci $(9{,}5;\ 10{,}5)$. Dai bilanci il salto è
     $40 - 2s_1$ e l'obiettivo $f(s_1) = 1600 + s_1 + \gamma(40 - 2s_1)^2$:
     $f'(s_1) = 0$ dà $s_1 = 20 - 1/(8\gamma)$. Per $\gamma \le 1/160$ conviene non

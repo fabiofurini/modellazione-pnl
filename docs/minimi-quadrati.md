@@ -58,7 +58,7 @@ Descrizione della funzione obiettivo e dei vincoli:
 
 !!! example "Esempio a mano (senza caratteristiche: torna la media)"
     Sette vendite: 88, 96, 104, 112, 120, 132, 148. Il solver dà
-    $\tilde b = 800/7 = 114{,}2857$, $\tilde z = 2619{,}4286$ e moltiplicatori
+    $\tilde b = 800/7 = 114{,}2857$, $z(\text{NLP}) = 2619{,}4286$ e moltiplicatori
     $\tilde\pi_i = 2\tilde r_i$. La stazionarietà rispetto a $b$ dà $\sum_i r_i = 0$:
     la stima è la **media**. Sugli stessi numeri la regressione robusta dà la mediana
     112 e quella quantile ($\tau = 9/13$) dà 120. Se l'ultimo valore passa a 248, la

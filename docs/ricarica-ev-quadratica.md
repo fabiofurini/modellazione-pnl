@@ -69,7 +69,7 @@ addolcire anche le rampe dell'edificio.
 !!! example "Esempio a mano (1 veicolo, 2 ore)"
     $e = 10$ kWh, $\eta = 1$, prezzi $0{,}10$ e $0{,}20$ €/kWh, $\bar p = 12$ kW. Il
     modello lineare carica tutto nell'ora economica. Con $\gamma = 0{,}01$ il solver dà
-    $\tilde x = (6{,}25;\ 3{,}75)$, $\tilde z = 1{,}4375$ e moltiplicatore del
+    $\tilde x = (6{,}25;\ 3{,}75)$, $z(\text{NLP}) = 1{,}4375$ e moltiplicatore del
     fabbisogno $0{,}15$. Con $x_1 = 5 + d$ l'obiettivo è
     $1{,}5 - 0{,}1d + 4\gamma d^2$, minimo in $d = 1/(80\gamma)$ (per
     $\gamma \ge 1/400$). La stazionarietà dà
